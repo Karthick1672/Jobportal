@@ -1,6 +1,6 @@
 export const jobsData = [
   {    
-    id: "jobnext1",
+    id: "jobnest1",
     title: "Technical Support Engineers",
     company: "Zoho Corporation",
     // companyLogo: "https://via.placeholder.com/60?text=Zoho",
@@ -40,7 +40,7 @@ export const jobsData = [
     // ]
   },
   {    
-    id: "jobnext2",
+    id: "jobnest2",
     title: "Technical Support Representative Intern",
     company: "IBM",
     // companyLogo: "https://via.placeholder.com/60?text=Zoho",

@@ -15,7 +15,7 @@ export const Footer = () => {
                 height="40" 
                 className="rounded me-2"
               />
-              <span className="fs-4 fw-bold">Job<span className="text-primary">nest</span></span>
+              <span className="fs-4 fw-bold">JOB<span className="text-primary">NEST</span></span>
             </Link>
             <p className="text-secondary small">
               Find Your Dream Job. Build Your Future. Connecting talented professionals with industry-leading companies worldwide.

@@ -13,7 +13,7 @@ export const Navbar = () => {
             height="45" 
             className="rounded me-2"
           />
-          <span className="text-dark">JOB<span className="text-primary">NEXT</span></span>
+          <span className="text-dark">JOB<span className="text-primary">NEST</span></span>
         </Link>
 
         {/* MOBILE TOGGLER */}
@@ -52,13 +52,13 @@ export const Navbar = () => {
           </ul>
 
           {/* ACTION BUTTONS */}
-          <div className="d-flex align-items-center gap-2 mt-3 mt-lg-0">
+          {/* <div className="d-flex align-items-center gap-2 mt-3 mt-lg-0">
             <Link to="/post-job" className="btn jn-btn-primary px-3">
               <i className="bi bi-plus-circle me-1"></i> Post a Job
             </Link>
             <Link to="/login" className="btn jn-btn-outline px-3">Log In</Link>
             <Link to="/register" className="btn btn-dark px-3">Register</Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </nav>

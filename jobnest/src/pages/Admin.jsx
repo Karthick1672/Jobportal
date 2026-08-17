@@ -119,6 +119,24 @@ export const Admin = () => {
     }
   };
 
+  // Handle Share Functionality
+  const handleShare = (job) => {
+    const jobUrl = `${window.location.origin}/jobs/${job.id}`;
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: job.title,
+          text: `Check out this opening for ${job.title} at ${job.company}!`,
+          url: jobUrl,
+        })
+        .catch((err) => console.error('Error sharing job:', err));
+    } else {
+      navigator.clipboard.writeText(jobUrl);
+      alert('Job link copied to clipboard!');
+    }
+  };
+
   // 🔒 PASSWORD LOGIN SCREEN
   if (!isAuthenticated) {
     return (
@@ -360,6 +378,13 @@ export const Admin = () => {
                           <span className="badge bg-light text-dark border">{job.type}</span>
                         </td>
                         <td className="text-end">
+                          <button
+                            onClick={() => handleShare(job)}
+                            className="btn btn-sm btn-outline-primary me-2"
+                            title="Share Job Link"
+                          >
+                            🔗 Share
+                          </button>
                           <a
                             href={job.applyLink}
                             target="_blank"

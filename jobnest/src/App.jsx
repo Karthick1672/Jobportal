@@ -9,7 +9,7 @@ import { Categories } from './pages/Categories';
 import { Companies } from './pages/Companies';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
-import { PostJob } from './pages/PostJob';
+import { Admin } from './pages/Admin'; // ✅ Keep Admin
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { Terms } from './pages/Terms';
 import { About } from './pages/About';
@@ -30,12 +30,11 @@ export default function App() {
         <Route path="companies" element={<Companies />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
-        <Route path="post-job" element={<PostJob />} />
         
-        {/* ADMIN ROUTE FOR QUICK JOB POSTING */}
-        <Route path="admin" element={<PostJob />} />
+        {/* NEW ADMIN ROUTE */}
+        <Route path="admin" element={<Admin />} />
 
-        {/* LEGAL & COMPANY ROUTES FOR ADSENSE */}
+        {/* LEGAL & COMPANY ROUTES */}
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
         <Route path="terms" element={<Terms />} />
         <Route path="about" element={<About />} />

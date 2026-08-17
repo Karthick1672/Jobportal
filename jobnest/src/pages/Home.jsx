@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { jobsData } from '../data/Jobs.js';
+import { supabase } from '../services/supabase';
 
 export const Home = () => {
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const categories = [
     { name: 'IT & Software', icon: 'bi-code-slash', count: '2,540 Jobs' },
     { name: 'Engineering', icon: 'bi-gear-wide-connected', count: '1,210 Jobs' },
@@ -14,6 +17,26 @@ export const Home = () => {
     { name: 'Education', icon: 'bi-mortarboard', count: '390 Jobs' },
     { name: 'Sales', icon: 'bi-graph-up-arrow', count: '1,150 Jobs' },
   ];
+
+  useEffect(() => {
+    fetchFeaturedJobs();
+  }, []);
+
+  const fetchFeaturedJobs = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('jobs')
+      .select('*')
+      .order('id', { ascending: false })
+      .limit(6); // Show top 6 latest jobs on homepage
+
+    if (error) {
+      console.error('Error fetching jobs:', error.message);
+    } else {
+      setJobs(data || []);
+    }
+    setLoading(false);
+  };
 
   return (
     <>
@@ -105,32 +128,43 @@ export const Home = () => {
             </div>
           </div>
 
-          <div className="row g-4">
-            {jobsData.map((job) => (
-              <div key={job.id} className="col-lg-4 col-md-6" data-aos="fade-up">
-                <div className="jn-card p-4 h-100 d-flex flex-column justify-content-between">
-                  <div>
-                    <div className="d-flex align-items-center justify-content-between mb-3">
-                      <span className="badge bg-primary-subtle text-primary fw-semibold">{job.company}</span>
-                      <span className="badge bg-light text-dark">{job.type}</span>
+          {loading ? (
+            <div className="text-center py-5">
+              <div className="spinner-border text-primary" role="status"></div>
+              <p className="mt-2 text-muted">Loading featured jobs...</p>
+            </div>
+          ) : jobs.length === 0 ? (
+            <div className="text-center py-5">
+              <p className="text-muted">No featured jobs available.</p>
+            </div>
+          ) : (
+            <div className="row g-4">
+              {jobs.map((job) => (
+                <div key={job.id} className="col-lg-4 col-md-6" data-aos="fade-up">
+                  <div className="jn-card p-4 h-100 d-flex flex-column justify-content-between">
+                    <div>
+                      <div className="d-flex align-items-center justify-content-between mb-3">
+                        <span className="badge bg-primary-subtle text-primary fw-semibold">{job.company}</span>
+                        <span className="badge bg-light text-dark">{job.type}</span>
+                      </div>
+                      <h5 className="fw-bold text-dark fs-6 mb-2">{job.title}</h5>
+                      <div className="d-flex flex-wrap gap-2 text-secondary small mb-3">
+                        <span><i className="bi bi-geo-alt me-1 text-primary"></i>{job.location}</span>
+                        {job.salary && <span><i className="bi bi-cash me-1 text-success"></i>{job.salary}</span>}
+                      </div>
                     </div>
-                    <h5 className="fw-bold text-dark fs-6 mb-2">{job.title}</h5>
-                    <div className="d-flex flex-wrap gap-2 text-secondary small mb-3">
-                      <span><i className="bi bi-geo-alt me-1 text-primary"></i>{job.location}</span>
-                      <span><i className="bi bi-cash me-1 text-success"></i>{job.salary}</span>
-                    </div>
-                  </div>
 
-                  <div className="pt-3 border-top d-flex align-items-center justify-content-between">
-                    <span className="text-muted small">{job.experience}</span>
-                    <Link to={`/jobs/${job.id}`} className="btn jn-btn-outline btn-sm text-decoration-none">
-                      View Job
-                    </Link>
+                    <div className="pt-3 border-top d-flex align-items-center justify-content-between">
+                      <span className="text-muted small">{job.experience || 'Freshers'}</span>
+                      <Link to={`/jobs/${job.id}`} className="btn jn-btn-outline btn-sm text-decoration-none">
+                        View Job
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </>

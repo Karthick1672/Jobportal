@@ -32,6 +32,9 @@ export default function App() {
         <Route path="register" element={<Register />} />
         <Route path="post-job" element={<PostJob />} />
         
+        {/* ADMIN ROUTE FOR QUICK JOB POSTING */}
+        <Route path="admin" element={<PostJob />} />
+
         {/* LEGAL & COMPANY ROUTES FOR ADSENSE */}
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
         <Route path="terms" element={<Terms />} />

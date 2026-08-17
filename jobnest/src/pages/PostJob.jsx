@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { jobsData } from '../data/Jobs';
+import { supabase } from '../services/supabase';
 
 export const PostJob = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     company: '',
@@ -17,11 +18,12 @@ export const PostJob = () => {
     skills: ''
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    const newJob = {
-      id: `job-${jobsData.length + 1}`,
+    // 1. Prepare data mapping for Supabase columns
+    const jobPayload = {
       title: formData.title,
       company: formData.company,
       location: formData.location,
@@ -29,19 +31,25 @@ export const PostJob = () => {
       category: formData.category,
       salary: formData.salary,
       experience: formData.experience,
-      postedDate: new Date().toISOString().split('T')[0],
       description: formData.description,
-      skills: formData.skills.split(',').map((skill) => skill.trim()),
-      responsibilities: ['Collaborate with cross-functional teams.'],
-      requirements: ['Relevant industry experience required.'],
-      benefits: ['Competitive compensation', 'Health insurance']
+      // If skills is stored as a string or array in your database
+      skills: formData.skills
     };
 
-    // Append new job to list
-    jobsData.unshift(newJob);
+    // 2. Insert into Supabase 'jobs' table
+    const { error } = await supabase
+      .from('jobs')
+      .insert([jobPayload]);
 
-    alert('Job posted successfully!');
-    navigate('/jobs');
+    setLoading(false);
+
+    if (error) {
+      alert('Failed to post job: ' + error.message);
+      console.error('Supabase Error:', error);
+    } else {
+      alert('Job posted successfully to Supabase!');
+      navigate('/jobs');
+    }
   };
 
   return (
@@ -61,7 +69,7 @@ export const PostJob = () => {
                 <form onSubmit={handleSubmit}>
                   <div className="row g-3">
                     <div className="col-md-6">
-                      <label className="form-label small fw-semibold">Job Title</label>
+                      <label className="form-label small fw-semibold">Job Title *</label>
                       <input
                         type="text"
                         className="form-control"
@@ -73,7 +81,7 @@ export const PostJob = () => {
                     </div>
 
                     <div className="col-md-6">
-                      <label className="form-label small fw-semibold">Company Name</label>
+                      <label className="form-label small fw-semibold">Company Name *</label>
                       <input
                         type="text"
                         className="form-control"
@@ -108,11 +116,12 @@ export const PostJob = () => {
                         <option value="Full Time">Full Time</option>
                         <option value="Contract">Contract</option>
                         <option value="Part Time">Part Time</option>
+                        <option value="Internship">Internship</option>
                       </select>
                     </div>
 
                     <div className="col-md-4">
-                      <label className="form-label small fw-semibold">Location</label>
+                      <label className="form-label small fw-semibold">Location *</label>
                       <input
                         type="text"
                         className="form-control"
@@ -131,7 +140,6 @@ export const PostJob = () => {
                         placeholder="e.g. ₹8–12 LPA"
                         value={formData.salary}
                         onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
-                        required
                       />
                     </div>
 
@@ -143,7 +151,6 @@ export const PostJob = () => {
                         placeholder="e.g. 2-4 Years"
                         value={formData.experience}
                         onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
-                        required
                       />
                     </div>
 
@@ -155,12 +162,11 @@ export const PostJob = () => {
                         placeholder="React.js, JavaScript, Node.js, CSS"
                         value={formData.skills}
                         onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
-                        required
                       />
                     </div>
 
                     <div className="col-12">
-                      <label className="form-label small fw-semibold">Job Description</label>
+                      <label className="form-label small fw-semibold">Job Description *</label>
                       <textarea
                         className="form-control"
                         rows="4"
@@ -172,8 +178,12 @@ export const PostJob = () => {
                     </div>
 
                     <div className="col-12 mt-4">
-                      <button type="submit" className="btn jn-btn-primary w-100 py-2">
-                        Publish Job
+                      <button 
+                        type="submit" 
+                        className="btn jn-btn-primary w-100 py-2" 
+                        disabled={loading}
+                      >
+                        {loading ? 'Publishing...' : 'Publish Job'}
                       </button>
                     </div>
                   </div>

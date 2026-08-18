@@ -139,30 +139,45 @@ export const Home = () => {
             </div>
           ) : (
             <div className="row g-4">
-              {jobs.map((job) => (
-                <div key={job.id} className="col-lg-4 col-md-6" data-aos="fade-up">
-                  <div className="jn-card p-4 h-100 d-flex flex-column justify-content-between">
-                    <div>
-                      <div className="d-flex align-items-center justify-content-between mb-3">
-                        <span className="badge bg-primary-subtle text-primary fw-semibold">{job.company}</span>
-                        <span className="badge bg-light text-dark">{job.type}</span>
-                      </div>
-                      <h5 className="fw-bold text-dark fs-6 mb-2">{job.title}</h5>
-                      <div className="d-flex flex-wrap gap-2 text-secondary small mb-3">
-                        <span><i className="bi bi-geo-alt me-1 text-primary"></i>{job.location}</span>
-                        {job.salary && <span><i className="bi bi-cash me-1 text-success"></i>{job.salary}</span>}
-                      </div>
-                    </div>
+              {jobs.map((job) => {
+                const passoutYear = job.passout_year ?? job.passoutYear;
 
-                    <div className="pt-3 border-top d-flex align-items-center justify-content-between">
-                      <span className="text-muted small">{job.experience || 'Freshers'}</span>
-                      <Link to={`/jobs/${job.id}`} className="btn jn-btn-outline btn-sm text-decoration-none">
-                        View Job
-                      </Link>
+                return (
+                  <div key={job.id} className="col-lg-4 col-md-6" data-aos="fade-up">
+                    <div className="jn-card p-4 h-100 d-flex flex-column justify-content-between">
+                      <div>
+                        <div className="d-flex align-items-center justify-content-between mb-3 gap-2">
+                          <span className="badge bg-primary-subtle text-primary fw-semibold">{job.company}</span>
+                          
+                          <div className="d-flex gap-1 align-items-center">
+                            {/* Passed Out Year Badge */}
+                            {passoutYear && (
+                              <span className="badge bg-info-subtle text-info border border-info-subtle">
+                                🎓 {passoutYear} Batch
+                              </span>
+                            )}
+                            <span className="badge bg-light text-dark">{job.type}</span>
+                          </div>
+                        </div>
+                        
+                        <h5 className="fw-bold text-dark fs-6 mb-2">{job.title}</h5>
+                        
+                        <div className="d-flex flex-wrap gap-2 text-secondary small mb-3">
+                          <span><i className="bi bi-geo-alt me-1 text-primary"></i>{job.location}</span>
+                          {job.salary && <span><i className="bi bi-cash me-1 text-success"></i>{job.salary}</span>}
+                        </div>
+                      </div>
+
+                      <div className="pt-3 border-top d-flex align-items-center justify-content-between">
+                        <span className="text-muted small">{job.experience || 'Freshers'}</span>
+                        <Link to={`/jobs/${job.id}`} className="btn jn-btn-outline btn-sm text-decoration-none">
+                          View Job
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

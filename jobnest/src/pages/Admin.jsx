@@ -21,6 +21,7 @@ export const Admin = () => {
     category: 'IT & Software',
     salary: '',
     experience: '0-2 Years',
+    passout_year: '',
     skills: '',
     applyLink: '',
     description: ''
@@ -85,7 +86,13 @@ export const Admin = () => {
     setLoading(true);
     setMessage({ type: '', text: '' });
 
-    const { error } = await supabase.from('jobs').insert([formData]);
+    // Format passout_year to integer or null for Supabase
+    const payload = {
+      ...formData,
+      passout_year: formData.passout_year ? parseInt(formData.passout_year, 10) : null
+    };
+
+    const { error } = await supabase.from('jobs').insert([payload]);
 
     setLoading(false);
     if (error) {
@@ -100,6 +107,7 @@ export const Admin = () => {
         category: 'IT & Software',
         salary: '',
         experience: '0-2 Years',
+        passout_year: '',
         skills: '',
         applyLink: '',
         description: ''
@@ -296,6 +304,25 @@ export const Admin = () => {
                 </div>
 
                 <div className="col-md-4">
+                  <label className="form-label fw-semibold">
+                    Passed Out Year <span className="text-muted fw-normal">(Optional)</span>
+                  </label>
+                  <select
+                    name="passout_year"
+                    className="form-select"
+                    value={formData.passout_year}
+                    onChange={handleChange}
+                  >
+                    <option value="">Any Batch / Not Specified</option>
+                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                  </select>
+                </div>
+
+                <div className="col-md-6">
                   <label className="form-label fw-semibold">Skills (Comma separated)</label>
                   <input
                     type="text"
@@ -307,7 +334,7 @@ export const Admin = () => {
                   />
                 </div>
 
-                <div className="col-12">
+                <div className="col-md-6">
                   <label className="form-label fw-semibold">Apply Link URL *</label>
                   <input
                     type="url"
@@ -363,7 +390,7 @@ export const Admin = () => {
                     <tr>
                       <th>Title</th>
                       <th>Company</th>
-                      <th>Location</th>
+                      <th>Batch Year</th>
                       <th>Type</th>
                       <th className="text-end">Actions</th>
                     </tr>
@@ -373,7 +400,15 @@ export const Admin = () => {
                       <tr key={job.id}>
                         <td className="fw-bold">{job.title}</td>
                         <td>{job.company}</td>
-                        <td>{job.location}</td>
+                        <td>
+                          {job.passout_year ? (
+                            <span className="badge bg-info-subtle text-info border">
+                              {job.passout_year}
+                            </span>
+                          ) : (
+                            <span className="text-muted small">Any</span>
+                          )}
+                        </td>
                         <td>
                           <span className="badge bg-light text-dark border">{job.type}</span>
                         </td>

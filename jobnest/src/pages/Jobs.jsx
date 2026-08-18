@@ -11,8 +11,9 @@ export const Jobs = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedType, setSelectedType] = useState('All');
+  const [selectedYear, setSelectedYear] = useState('All');
 
-  // Pagination Configuration (Set to 10 jobs per page)
+  // Pagination Configuration
   const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 10;
 
@@ -20,10 +21,10 @@ export const Jobs = () => {
     fetchJobs();
   }, []);
 
-  // Reset to first page when search or filters change
+  // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, selectedCategory, selectedType]);
+  }, [searchTerm, selectedCategory, selectedType, selectedYear]);
 
   const fetchJobs = async () => {
     setLoading(true);
@@ -40,11 +41,12 @@ export const Jobs = () => {
     setLoading(false);
   };
 
+  // Safe Filtering Logic (Handles null/undefined fields & both camelCase/snake_case)
   const filteredJobs = jobs.filter((job) => {
     const matchesSearch =
-      job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.location.toLowerCase().includes(searchTerm.toLowerCase());
+      job.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      job.location?.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesCategory =
       selectedCategory === 'All' || job.category === selectedCategory;
@@ -52,10 +54,15 @@ export const Jobs = () => {
     const matchesType =
       selectedType === 'All' || job.type === selectedType;
 
-    return matchesSearch && matchesCategory && matchesType;
+    const jobYear = job.passout_year ?? job.passoutYear;
+    const matchesYear =
+      selectedYear === 'All' ||
+      (jobYear != null && String(jobYear) === selectedYear);
+
+    return matchesSearch && matchesCategory && matchesType && matchesYear;
   });
 
-  // Calculate 10-job page slices
+  // Calculate Pagination Slices
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
   const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
@@ -73,12 +80,13 @@ export const Jobs = () => {
       </Helmet>
 
       <div className="container py-5">
+        {/* Search & Filter Header */}
         <div className="mb-5 text-center">
           <h2 className="fw-bold mb-3">Explore All Job Openings</h2>
           <p className="text-muted">Discover your next career move from top employers.</p>
 
           <div className="row g-2 justify-content-center mt-3">
-            <div className="col-md-5">
+            <div className="col-md-4">
               <input
                 type="text"
                 className="form-control form-control-lg shadow-sm"
@@ -113,9 +121,24 @@ export const Jobs = () => {
                 <option value="Internship">Internship</option>
               </select>
             </div>
+            <div className="col-md-2">
+              <select
+                className="form-select form-select-lg shadow-sm"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+              >
+                <option value="All">Passed Out Year</option>
+                <option value="2026">2026</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+              </select>
+            </div>
           </div>
         </div>
 
+        {/* Job Listings Grid */}
         {loading ? (
           <div className="text-center py-5">
             <div className="spinner-border text-primary" role="status"></div>
@@ -128,31 +151,45 @@ export const Jobs = () => {
         ) : (
           <>
             <div className="row g-4 mb-4">
-              {currentJobs.map((job) => (
-                <div key={job.id} className="col-md-6 col-lg-4">
-                  <div className="card h-100 border-0 shadow-sm rounded-4 p-3 d-flex flex-column justify-content-between">
-                    <div>
-                      <div className="d-flex justify-content-between align-items-start mb-2">
-                        <span className="badge bg-primary-subtle text-primary">{job.category}</span>
-                        <span className="badge bg-light text-dark border">{job.type}</span>
-                      </div>
-                      <h5 className="fw-bold mb-1">{job.title}</h5>
-                      <p className="text-muted small mb-3">{job.company}</p>
-                      <div className="d-flex flex-column gap-1 text-secondary small mb-3">
-                        <span>📍 {job.location}</span>
-                        {job.salary && <span>💰 {job.salary}</span>}
-                      </div>
-                    </div>
+              {currentJobs.map((job) => {
+                const passoutYear = job.passout_year ?? job.passoutYear;
 
-                    <div className="pt-3 border-top d-flex align-items-center justify-content-between">
-                      <span className="text-muted small">💼 {job.experience || '0-2 Years'}</span>
-                      <Link to={`/jobs/${job.id}`} className="btn btn-primary btn-sm px-3">
-                        View Job
-                      </Link>
+                return (
+                  <div key={job.id} className="col-md-6 col-lg-4">
+                    <div className="card h-100 border-0 shadow-sm rounded-4 p-3 d-flex flex-column justify-content-between">
+                      <div>
+                        <div className="d-flex justify-content-between align-items-start mb-2 gap-2">
+                          <span className="badge bg-primary-subtle text-primary">{job.category}</span>
+                          
+                          <div className="d-flex gap-1 align-items-center">
+                            {passoutYear && (
+                              <span className="badge bg-info-subtle text-info border border-info-subtle">
+                                🎓 {passoutYear} Batch
+                              </span>
+                            )}
+                            <span className="badge bg-light text-dark border">{job.type}</span>
+                          </div>
+                        </div>
+
+                        <h5 className="fw-bold mb-1">{job.title}</h5>
+                        <p className="text-muted small mb-3">{job.company}</p>
+
+                        <div className="d-flex flex-column gap-1 text-secondary small mb-3">
+                          <span>📍 {job.location}</span>
+                          {job.salary && <span>💰 {job.salary}</span>}
+                        </div>
+                      </div>
+
+                      <div className="pt-3 border-top d-flex align-items-center justify-content-between">
+                        <span className="text-muted small">💼 {job.experience || '0-2 Years'}</span>
+                        <Link to={`/jobs/${job.id}`} className="btn btn-primary btn-sm px-3">
+                          View Job
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Pagination Controls */}

@@ -33,8 +33,8 @@ export const JobDetails = () => {
     if (navigator.share) {
       navigator
         .share({
-          title: job.title,
-          text: `Check out this opening for ${job.title} at ${job.company}!`,
+          title: job?.title,
+          text: `Check out this opening for ${job?.title} at ${job?.company}!`,
           url: jobUrl,
         })
         .catch((err) => console.error('Error sharing:', err));
@@ -83,6 +83,10 @@ export const JobDetails = () => {
     );
   }
 
+  // Handle both database naming conventions (snake_case vs camelCase)
+  const passoutYear = job.passout_year || job.passoutYear;
+  const applyUrl = job.applyLink || job.apply_link;
+
   return (
     <>
       <Helmet>
@@ -93,9 +97,16 @@ export const JobDetails = () => {
         <div className="row g-4">
           {/* Main Details */}
           <div className="col-lg-8">
-            <div className="d-flex gap-2 mb-3">
+            <div className="d-flex flex-wrap gap-2 mb-3 align-items-center">
               <span className="badge bg-primary-subtle text-primary">{job.category}</span>
               <span className="badge bg-light text-dark border">{job.type}</span>
+              
+              {/* Passed Out Year / Batch Badge */}
+              {passoutYear && (
+                <span className="badge bg-info-subtle text-info border border-info-subtle">
+                  🎓 {passoutYear} Batch
+                </span>
+              )}
             </div>
 
             <h2 className="fw-bold mb-2">{job.title}</h2>
@@ -129,7 +140,7 @@ export const JobDetails = () => {
               </p>
 
               <a
-                href={job.applyLink}
+                href={applyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-primary w-100 py-2 mb-2 fw-semibold"

@@ -1,0 +1,77 @@
+:root {
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --dark: #0F172A;
+  --bg-light: #F8FAFC;
+  --text-main: #1E293B;
+  --text-muted: #64748B;
+  --border-color: #E2E8F0;
+  --card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+  --card-shadow-hover: 0 12px 28px -4px rgba(37, 99, 235, 0.12);
+}
+
+body {
+  background-color: var(--bg-light);
+  color: var(--text-main);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.jn-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease-in-out;
+}
+
+.jn-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: rgba(37, 99, 235, 0.3);
+}
+
+.jn-btn-primary {
+  background-color: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  padding: 0.6rem 1.25rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.jn-btn-primary:hover {
+  background-color: var(--primary-hover);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.jn-btn-outline {
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  background: #fff;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 0.6rem 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.jn-btn-outline:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: #EFF6FF;
+}
+
+main {
+  flex: 1;
+}

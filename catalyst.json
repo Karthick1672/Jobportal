@@ -1,0 +1,8 @@
+{
+  "client": {
+    "source": "dist",
+    "routes": {
+      "/**": "/index.html"
+    }
+  }
+}

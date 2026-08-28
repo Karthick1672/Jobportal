@@ -1,0 +1,71 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+export const Footer = () => {
+  return (
+    <footer className="bg-dark text-white pt-5 pb-4 mt-auto">
+      <div className="container">
+        <div className="row g-4">
+          {/* BRAND COLUMN */}
+          <div className="col-lg-5 col-md-6" data-aos="fade-up">
+            <Link to="/" className="d-flex align-items-center mb-3 text-decoration-none text-white">
+              <img 
+                src="/Jobnext.png" 
+                alt="Jobnest Logo" 
+                height="40" 
+                className="rounded me-2"
+              />
+              <span className="fs-4 fw-bold">JOB<span className="text-primary">NEST</span></span>
+            </Link>
+            <p className="text-secondary small pe-lg-4">
+              Find Your Dream Job. Build Your Future. Connecting talented professionals with industry-leading companies worldwide.
+            </p>
+          </div>
+
+          {/* JOB SEEKERS */}
+          <div className="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <h6 className="fw-bold mb-3">Job Seekers</h6>
+            <ul className="list-unstyled text-secondary small d-flex flex-column gap-2">
+              <li>
+                <Link to="/jobs" className="text-secondary text-decoration-none hover-primary">Find Jobs</Link>
+              </li>
+              <li>
+                <Link to="/categories" className="text-secondary text-decoration-none hover-primary">Categories</Link>
+              </li>
+              <li>
+                <Link to="/companies" className="text-secondary text-decoration-none hover-primary">Companies</Link>
+              </li>
+              <li>
+                <Link to="/guides" className="text-secondary text-decoration-none hover-primary">Career Guides</Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* COMPANY & LEGAL */}
+          <div className="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <h6 className="fw-bold mb-3">Company</h6>
+            <ul className="list-unstyled text-secondary small d-flex flex-column gap-2">
+              <li>
+                <Link to="/about" className="text-secondary text-decoration-none hover-primary">About Us</Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-secondary text-decoration-none hover-primary">Contact Us</Link>
+              </li>
+              <li>
+                <Link to="/privacy-policy" className="text-secondary text-decoration-none hover-primary">Privacy Policy</Link>
+              </li>
+              <li>
+                <Link to="/terms" className="text-secondary text-decoration-none hover-primary">Terms & Conditions</Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <hr className="border-secondary my-4" />
+        <div className="text-center text-secondary small">
+          © {new Date().getFullYear()} Jobnest. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  );
+};

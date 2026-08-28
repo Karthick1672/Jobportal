@@ -1,0 +1,47 @@
+import React, { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import AOS from "aos";
+import { MainLayout } from "./layouts/MainLayout";
+import { Home } from "./pages/Home";
+import { Jobs } from "./pages/Jobs";
+import { JobDetails } from "./pages/JobDetails";
+import { Categories } from "./pages/Categories";
+import { Companies } from "./pages/Companies";
+import { CareerGuides } from "./pages/CareerGuides";
+import { GuideDetail } from "./pages/GuideDetail";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
+import { Admin } from "./pages/Admin";
+import { PrivacyPolicy } from "./pages/PrivacyPolicy";
+import { Terms } from "./pages/Terms";
+import { About } from "./pages/About";
+import { Contact } from "./pages/Contact";
+import { NotFound } from "./pages/NotFound";
+
+export default function App() {
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
+
+  return (
+    <Routes>
+      <Route path="/" element={<MainLayout />}>
+        <Route index element={<Home />} />
+        <Route path="jobs" element={<Jobs />} />
+        <Route path="jobs/:id" element={<JobDetails />} />
+        <Route path="categories" element={<Categories />} />
+        <Route path="companies" element={<Companies />} />
+        <Route path="guides" element={<CareerGuides />} />
+        <Route path="guides/:slug" element={<GuideDetail />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+        <Route path="admin" element={<Admin />} />
+        <Route path="about" element={<About />} />
+        <Route path="contact" element={<Contact />} />
+        <Route path="privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="terms" element={<Terms />} />
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
+  );
+}

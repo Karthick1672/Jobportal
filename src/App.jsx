@@ -17,6 +17,7 @@ import { Terms } from "./pages/Terms";
 import { About } from "./pages/About";
 import { Contact } from "./pages/Contact";
 import { NotFound } from "./pages/NotFound";
+import { ResumeChecker } from "./pages/ResumeChecker";
 
 export default function App() {
   useEffect(() => {
@@ -41,6 +42,7 @@ export default function App() {
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
         <Route path="terms" element={<Terms />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/resume-checker" element={<ResumeChecker />} />
       </Route>
     </Routes>
   );

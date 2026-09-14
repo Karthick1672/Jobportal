@@ -161,7 +161,8 @@ export const JobDetails = () => {
 
   const applyUrl = job.applyLink ?? job.apply_link;
 
-  const articleUrl = `https://www.jobnest.work/jobs/${job.id}`;
+  // const articleUrl = `https://www.jobnest.work/jobs/${job.id}`;
+  const articleUrl = `https://jobnest.work/jobs/${job.id}`;
 
   const metaDescription = [
     job.title,

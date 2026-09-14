@@ -30,58 +30,71 @@ export default async function handler(req, res) {
   const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    return res.status(500).send("Supabase environment variables are missing.");
+    console.error("Missing Supabase environment variables");
+
+    return res
+      .status(500)
+      .send("Supabase environment variables are missing.");
   }
 
-  const supabase = createClient(supabaseUrl, supabaseKey);
+  try {
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-  const { data: jobs, error } = await supabase
-    .from("jobs")
-    .select("id, created_at, updated_at")
-    .order("id", { ascending: false });
+    const { data: jobs, error } = await supabase
+      .from("jobs")
+      .select("id")
+      .order("id", { ascending: false });
 
-  if (error) {
-    console.error("Sitemap Supabase error:", error.message);
-    return res.status(500).send("Unable to generate sitemap.");
-  }
+    if (error) {
+      console.error("Sitemap Supabase error:", error.message);
 
-  const baseUrl = "https://jobnest.work";
+      return res
+        .status(500)
+        .send("Unable to generate sitemap.");
+    }
 
-  const staticUrls = staticPages
-    .map(
-      (path) => `
+    const baseUrl = "https://jobnest.work";
+
+    const staticUrls = staticPages
+      .map(
+        (path) => `
   <url>
     <loc>${escapeXml(`${baseUrl}${path}`)}</loc>
   </url>`
-    )
-    .join("");
+      )
+      .join("");
 
-  const jobUrls = (jobs || [])
-    .map((job) => {
-      const lastModified =
-        job.updated_at ||
-        job.created_at ||
-        new Date().toISOString();
-
-      return `
+    const jobUrls = (jobs || [])
+      .map(
+        (job) => `
   <url>
     <loc>${escapeXml(`${baseUrl}/jobs/${job.id}`)}</loc>
-    <lastmod>${new Date(lastModified).toISOString()}</lastmod>
-  </url>`;
-    })
-    .join("");
+  </url>`
+      )
+      .join("");
 
-  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${staticUrls}
 ${jobUrls}
 </urlset>`;
 
-  res.setHeader("Content-Type", "application/xml; charset=utf-8");
-  res.setHeader(
-    "Cache-Control",
-    "s-maxage=3600, stale-while-revalidate=86400"
-  );
+    res.setHeader(
+      "Content-Type",
+      "application/xml; charset=utf-8"
+    );
 
-  return res.status(200).send(sitemap);
+    res.setHeader(
+      "Cache-Control",
+      "s-maxage=3600, stale-while-revalidate=86400"
+    );
+
+    return res.status(200).send(sitemap);
+  } catch (error) {
+    console.error("Sitemap server error:", error);
+
+    return res
+      .status(500)
+      .send("Unable to generate sitemap.");
+  }
 }

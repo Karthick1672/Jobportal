@@ -28,7 +28,7 @@ export const GuideDetail = () => {
     return `section-${index + 1}-${cleanHeading}`;
   };
 
-  const articleUrl = `https://www.jobnest.work/guides/${guide.slug}`;
+  const articleUrl = `https://jobnest.work/guides/${guide.slug}`;
 
   // Article structured data
   const articleSchema = {
@@ -43,7 +43,7 @@ export const GuideDetail = () => {
     publisher: {
       "@type": "Organization",
       name: "JobNest",
-      url: "https://www.jobnest.work",
+      url: "https://jobnest.work",
     },
     mainEntityOfPage: {
       "@type": "WebPage",

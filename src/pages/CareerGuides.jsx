@@ -16,7 +16,7 @@ export const CareerGuides = () => {
 
         <meta name="robots" content="index, follow" />
 
-        <link rel="canonical" href="https://www.jobnest.work/guides" />
+        <link rel="canonical" href="https://jobnest.work/guides" />
 
         <meta property="og:title" content="Career Guides | JobNest" />
 
@@ -27,7 +27,7 @@ export const CareerGuides = () => {
 
         <meta property="og:type" content="website" />
 
-        <meta property="og:url" content="https://www.jobnest.work/guides" />
+        <meta property="og:url" content="https://https://jobnest.work/guides" />
       </Helmet>
 
       <main>

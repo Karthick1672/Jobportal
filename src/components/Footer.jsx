@@ -5,14 +5,9 @@ export const Footer = () => {
   return (
     <footer className="bg-dark text-white pt-5 pb-4 mt-auto">
       <div className="container">
-
         <div className="row g-4">
-
           {/* BRAND */}
-          <div
-            className="col-lg-4 col-md-6"
-            data-aos="fade-up"
-          >
+          <div className="col-lg-4 col-md-6" data-aos="fade-up">
             <Link
               to="/"
               className="d-flex align-items-center mb-3 text-decoration-none text-white"
@@ -36,8 +31,8 @@ export const Footer = () => {
               style={{ lineHeight: "1.8" }}
             >
               JobNest helps job seekers discover opportunities, explore
-              companies, prepare for interviews, improve their resumes,
-              and make more informed career decisions.
+              companies, prepare for interviews, improve their resumes, and make
+              more informed career decisions.
             </p>
 
             <p className="small mb-0">
@@ -58,12 +53,9 @@ export const Footer = () => {
             data-aos="fade-up"
             data-aos-delay="100"
           >
-            <h6 className="fw-bold mb-3">
-              Job Seekers
-            </h6>
+            <h6 className="fw-bold mb-3">Job Seekers</h6>
 
             <ul className="list-unstyled small d-flex flex-column gap-2">
-
               <li>
                 <Link
                   to="/jobs"
@@ -108,7 +100,6 @@ export const Footer = () => {
                   Resume Checker
                 </Link>
               </li>
-
             </ul>
           </div>
 
@@ -118,12 +109,9 @@ export const Footer = () => {
             data-aos="fade-up"
             data-aos-delay="150"
           >
-            <h6 className="fw-bold mb-3">
-              Company
-            </h6>
+            <h6 className="fw-bold mb-3">Company</h6>
 
             <ul className="list-unstyled small d-flex flex-column gap-2">
-
               <li>
                 <Link
                   to="/about"
@@ -141,7 +129,6 @@ export const Footer = () => {
                   Contact Us
                 </Link>
               </li>
-
             </ul>
           </div>
 
@@ -151,15 +138,12 @@ export const Footer = () => {
             data-aos="fade-up"
             data-aos-delay="200"
           >
-            <h6 className="fw-bold mb-3">
-              Legal
-            </h6>
+            <h6 className="fw-bold mb-3">Legal</h6>
 
             <ul className="list-unstyled small d-flex flex-column gap-2">
-
               <li>
                 <Link
-                  to="/privacy-policy"
+                  to="/privacy"
                   className="text-secondary text-decoration-none"
                 >
                   Privacy Policy
@@ -171,10 +155,9 @@ export const Footer = () => {
                   to="/terms"
                   className="text-secondary text-decoration-none"
                 >
-                  Terms & Conditions
+                  Terms &amp; Conditions
                 </Link>
               </li>
-
             </ul>
           </div>
 
@@ -184,12 +167,9 @@ export const Footer = () => {
             data-aos="fade-up"
             data-aos-delay="250"
           >
-            <h6 className="fw-bold mb-3">
-              Support
-            </h6>
+            <h6 className="fw-bold mb-3">Support</h6>
 
             <ul className="list-unstyled small d-flex flex-column gap-2">
-
               <li>
                 <Link
                   to="/contact"
@@ -207,26 +187,23 @@ export const Footer = () => {
                   Send Feedback
                 </Link>
               </li>
-
             </ul>
           </div>
-
         </div>
 
         <hr className="border-secondary my-4" />
 
         {/* DISCLAIMER */}
         <div className="row align-items-center g-3">
-
           <div className="col-lg-8">
             <p
               className="text-secondary small mb-0"
               style={{ lineHeight: "1.7" }}
             >
-              JobNest is a job discovery and career information platform.
-              Job listings may link to external employer websites.
-              JobNest does not guarantee employment or represent employers
-              unless explicitly stated.
+              JobNest is a job discovery and career information platform. Job
+              listings may link to external employer websites. JobNest does not
+              guarantee employment or represent employers unless explicitly
+              stated.
             </p>
           </div>
 
@@ -235,9 +212,7 @@ export const Footer = () => {
               © {new Date().getFullYear()} JobNest. All rights reserved.
             </p>
           </div>
-
         </div>
-
       </div>
     </footer>
   );

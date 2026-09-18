@@ -14,7 +14,7 @@ import { GuideDetail } from "./pages/GuideDetail";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import { Admin } from "./pages/Admin";
-import { PrivacyPolicy } from "./pages/PrivacyPolicy";
+import { PrivacyPolicy } from "./pages/privacy";
 import { Terms } from "./pages/Terms";
 import { About } from "./pages/About";
 import { Contact } from "./pages/Contact";
@@ -68,10 +68,7 @@ export default function App() {
           <Route path="contact" element={<Contact />} />
 
           {/* Legal */}
-          <Route
-            path="privacy-policy"
-            element={<PrivacyPolicy />}
-          />
+          <Route path="privacy" element={<PrivacyPolicy />} />
           <Route path="terms" element={<Terms />} />
 
           {/* 404 - keep this last */}

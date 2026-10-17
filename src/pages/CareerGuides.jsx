@@ -27,7 +27,12 @@ export const CareerGuides = () => {
 
         <meta property="og:type" content="website" />
 
-        <meta property="og:url" content="https://https://jobnest.work/guides" />
+        
+<meta
+  property="og:url"
+  content="https://jobnest.work/guides"
+/>
+
       </Helmet>
 
       <main>

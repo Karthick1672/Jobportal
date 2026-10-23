@@ -1,141 +1,249 @@
-import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { supabase } from '../services/supabase';
+import React, { useState, useEffect, useCallback } from "react";
+import { Helmet } from "react-helmet-async";
+import { supabase } from "../services/supabase";
+
+const createEmptyForm = () => ({
+  title: "",
+  company: "",
+  location: "",
+  type: "",
+  category: "",
+  salary: "",
+  experience: "",
+  passout_year: "",
+  skills: "",
+  applyLink: "",
+  description: "",
+});
+
+const JOB_TYPES = ["Full Time", "Part Time", "Contract", "Internship"];
+
+const JOB_CATEGORIES = ["IT & Software", "Engineering", "Finance", "Marketing"];
 
 export const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [passwordInput, setPasswordInput] = useState('');
-  const [authError, setAuthError] = useState('');
+  const [passwordInput, setPasswordInput] = useState("");
+  const [authError, setAuthError] = useState("");
 
-  const [activeTab, setActiveTab] = useState('post');
+  const [activeTab, setActiveTab] = useState("post");
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetchingJobs, setFetchingJobs] = useState(false);
-  const [message, setMessage] = useState({ type: '', text: '' });
-
-  // ⚡ Auto-Fill State
-  const [extractUrl, setExtractUrl] = useState('');
-  const [extracting, setExtracting] = useState(false);
-
-  const [formData, setFormData] = useState({
-    title: '',
-    company: '',
-    location: '',
-    type: 'Full Time',
-    category: 'IT & Software',
-    salary: '',
-    experience: '0-2 Years',
-    passout_year: '',
-    skills: '',
-    applyLink: '',
-    description: ''
+  const [deletingId, setDeletingId] = useState(null);
+  const [message, setMessage] = useState({
+    type: "",
+    text: "",
   });
 
-  // Check login session on mount
+  const [extractUrl, setExtractUrl] = useState("");
+  const [extracting, setExtracting] = useState(false);
+  const [formData, setFormData] = useState(createEmptyForm);
+  const [needsReview, setNeedsReview] = useState(false);
+
   useEffect(() => {
-    const sessionAuth = sessionStorage.getItem('isAdminAuth');
-    if (sessionAuth === 'true') {
-      setIsAuthenticated(true);
+    setIsAuthenticated(sessionStorage.getItem("isAdminAuth") === "true");
+  }, []);
+
+  const fetchJobs = useCallback(async () => {
+    setFetchingJobs(true);
+
+    try {
+      const { data, error } = await supabase
+        .from("jobs")
+        .select("*")
+        .order("id", { ascending: false });
+
+      if (error) throw error;
+
+      setJobs(data || []);
+    } catch (error) {
+      console.error("Error loading jobs:", error.message);
+
+      setMessage({
+        type: "danger",
+        text: "Could not load jobs. Please try again.",
+      });
+    } finally {
+      setFetchingJobs(false);
     }
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated && activeTab === 'manage') {
+    if (isAuthenticated && activeTab === "manage") {
       fetchJobs();
     }
-  }, [activeTab, isAuthenticated]);
+  }, [activeTab, isAuthenticated, fetchJobs]);
 
-  // Handle Login Submit
   const handleLogin = (e) => {
     e.preventDefault();
+
     const correctPassword = import.meta.env.VITE_ADMIN_PASSWORD;
+
+    if (!correctPassword) {
+      setAuthError(
+        "Admin password is not configured. Please check your environment settings.",
+      );
+      return;
+    }
 
     if (passwordInput === correctPassword) {
       setIsAuthenticated(true);
-      sessionStorage.setItem('isAdminAuth', 'true');
-      setAuthError('');
+      sessionStorage.setItem("isAdminAuth", "true");
+      setPasswordInput("");
+      setAuthError("");
     } else {
-      setAuthError('Incorrect admin password!');
+      setAuthError("Incorrect admin password.");
     }
   };
 
-  // Handle Logout
   const handleLogout = () => {
     setIsAuthenticated(false);
-    sessionStorage.removeItem('isAdminAuth');
-  };
-
-  // Fetch Jobs from Supabase
-  const fetchJobs = async () => {
-    setFetchingJobs(true);
-    const { data, error } = await supabase
-      .from('jobs')
-      .select('*')
-      .order('id', { ascending: false });
-
-    if (error) {
-      console.error('Error loading jobs:', error.message);
-    } else {
-      setJobs(data || []);
-    }
-    setFetchingJobs(false);
+    sessionStorage.removeItem("isAdminAuth");
+    setPasswordInput("");
+    setAuthError("");
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
+
+    if (needsReview) {
+      setMessage({
+        type: "warning",
+        text: "Review all extracted fields against the official job listing before publishing.",
+      });
+    }
   };
 
-  // ⚡ Auto-Fill from External Career URL
   const handleAutoFill = async () => {
-    if (!extractUrl) {
-      setMessage({ type: 'warning', text: 'Please enter a valid career job URL first.' });
+    const trimmedUrl = extractUrl.trim();
+
+    if (!trimmedUrl) {
+      setMessage({
+        type: "warning",
+        text: "Please enter the official job listing URL.",
+      });
+      return;
+    }
+
+    let parsedUrl;
+
+    try {
+      parsedUrl = new URL(trimmedUrl);
+
+      if (
+        !["https:", "http:"].includes(parsedUrl.protocol) ||
+        parsedUrl.username ||
+        parsedUrl.password
+      ) {
+        throw new Error("Invalid URL");
+      }
+    } catch {
+      setMessage({
+        type: "danger",
+        text: "Enter a valid HTTP or HTTPS job URL.",
+      });
       return;
     }
 
     setExtracting(true);
-    setMessage({ type: '', text: '' });
+    setMessage({ type: "", text: "" });
 
     try {
-      const { data, error } = await supabase.functions.invoke('parse-job', {
-        body: { url: extractUrl }
+      const { data, error } = await supabase.functions.invoke("parse-job", {
+        body: { url: parsedUrl.toString() },
       });
 
       if (error) {
-        let detailedMsg = error.message;
-        if (error.context && typeof error.context.json === 'function') {
-          try {
-            const errBody = await error.context.json();
-            detailedMsg = errBody.error || detailedMsg;
-          } catch (_) {}
+        let details = error.message || "Could not extract job details.";
+
+        try {
+          if (error.context?.json) {
+            const responseBody = await error.context.json();
+            details = responseBody.error || details;
+          }
+        } catch {
+          // Keep the original error message.
         }
-        throw new Error(detailedMsg);
+
+        throw new Error(details);
       }
 
-      if (!data || Object.keys(data).length === 0) {
-        throw new Error('Unable to extract job details from this page.');
+      if (!data || typeof data !== "object" || data.error) {
+        throw new Error(
+          data?.error || "The job page returned no usable details.",
+        );
       }
 
-      setFormData((prev) => ({
-        ...prev,
-        title: data.title || prev.title,
-        company: data.company || prev.company,
-        location: data.location || prev.location,
-        category: data.category || prev.category,
-        type: data.type || prev.type,
-        experience: data.experience || prev.experience,
-        salary: data.salary || prev.salary,
-        passout_year: data.passout_year ? String(data.passout_year) : prev.passout_year,
-        skills: data.skills || prev.skills,
-        description: data.description || prev.description,
-        applyLink: extractUrl
-      }));
+      const extractedFields = [
+        "title",
+        "company",
+        "location",
+        "type",
+        "category",
+        "experience",
+        "salary",
+        "passout_year",
+        "skills",
+        "description",
+      ];
 
-      setMessage({ type: 'success', text: '⚡ Job details successfully extracted and filled!' });
-    } catch (err) {
-      console.error('Auto-fill error:', err);
+      const hasExtractedData = extractedFields.some((field) => {
+        return typeof data[field] === "string" && data[field].trim().length > 0;
+      });
+
+      if (!hasExtractedData || !data.title || !data.company) {
+        throw new Error(
+          "A job title and company could not be verified. Check the official page or enter the details manually.",
+        );
+      }
+
+      setFormData((previous) => {
+        const next = { ...previous };
+
+        for (const field of extractedFields) {
+          const value = data[field];
+
+          // Only replace a field when the extractor returns a
+          // non-empty string. Missing details stay unchanged.
+          if (typeof value === "string" && value.trim()) {
+            next[field] = value.trim();
+          }
+        }
+
+        // Keep the official listing URL in the existing applyLink
+        // field; no database schema change is needed.
+        next.applyLink = parsedUrl.toString();
+
+        // Only keep a batch year if the extraction returned a
+        // valid year. The admin must verify it before publishing.
+        if (
+          data.passout_year !== undefined &&
+          data.passout_year !== null &&
+          String(data.passout_year).trim() !== ""
+        ) {
+          next.passout_year = String(data.passout_year).trim();
+        }
+
+        return next;
+      });
+
+      setNeedsReview(true);
+
       setMessage({
-        type: 'danger',
-        text: `Extraction failed: ${err.message || 'Check URL or fill manually.'}`
+        type: "warning",
+        text: "Details extracted. Verify every field against the official listing before publishing. Missing details should remain blank.",
+      });
+    } catch (error) {
+      console.error("Job extraction error:", error);
+
+      setMessage({
+        type: "danger",
+        text: `Extraction failed: ${error.message || "Please check the URL and try again."}`,
       });
     } finally {
       setExtracting(false);
@@ -144,78 +252,214 @@ export const Admin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setMessage({ type: '', text: '' });
 
-    // Format passout_year to integer or null for Supabase
+    if (loading) return;
+
+    const title = formData.title.trim();
+    const company = formData.company.trim();
+    const location = formData.location.trim();
+    const applyLink = formData.applyLink.trim();
+    const description = formData.description.trim();
+
+    if (!title || !company || !location || !applyLink || !description) {
+      setMessage({
+        type: "warning",
+        text: "Please complete the required fields: title, company, location, application URL, and description.",
+      });
+      return;
+    }
+
+    let validatedApplyUrl;
+
+    try {
+      validatedApplyUrl = new URL(applyLink);
+
+      if (
+        !["https:", "http:"].includes(validatedApplyUrl.protocol) ||
+        validatedApplyUrl.username ||
+        validatedApplyUrl.password
+      ) {
+        throw new Error("Invalid URL");
+      }
+    } catch {
+      setMessage({
+        type: "danger",
+        text: "Enter a valid HTTP or HTTPS application URL.",
+      });
+      return;
+    }
+
+    if (needsReview) {
+      const confirmed = window.confirm(
+        "Have you checked the title, company, location, skills, eligibility, salary, and description against the official job listing? Publish only verified details.",
+      );
+
+      if (!confirmed) return;
+    }
+
+    const rawYear = formData.passout_year.trim();
+
+    if (rawYear && !/^\d{4}$/.test(rawYear)) {
+      setMessage({
+        type: "warning",
+        text: "Enter a valid four-digit graduation year or leave it blank.",
+      });
+      return;
+    }
+
     const payload = {
-      ...formData,
-      passout_year: formData.passout_year ? parseInt(formData.passout_year, 10) : null
+      title,
+      company,
+      location,
+      type: formData.type.trim(),
+      category: formData.category.trim(),
+      salary: formData.salary.trim(),
+      experience: formData.experience.trim(),
+      passout_year: rawYear ? Number(rawYear) : null,
+      skills: formData.skills.trim(),
+      applyLink: validatedApplyUrl.toString(),
+      description,
     };
 
-    const { error } = await supabase.from('jobs').insert([payload]);
+    setLoading(true);
+    setMessage({ type: "", text: "" });
 
-    setLoading(false);
-    if (error) {
-      setMessage({ type: 'danger', text: `Error posting job: ${error.message}` });
-    } else {
-      setMessage({ type: 'success', text: 'Job posted successfully!' });
-      setExtractUrl('');
-      setFormData({
-        title: '',
-        company: '',
-        location: '',
-        type: 'Full Time',
-        category: 'IT & Software',
-        salary: '',
-        experience: '0-2 Years',
-        passout_year: '',
-        skills: '',
-        applyLink: '',
-        description: ''
+    try {
+      const { data: insertedJobs, error } = await supabase
+        .from("jobs")
+        .insert([payload])
+        .select("id");
+
+      if (error) throw error;
+
+      // The job is already published at this point. Email failure must not
+      // make the admin think the job failed or encourage duplicate posting.
+      let emailNotice = "";
+      const { error: emailError } = await supabase.functions.invoke(
+        "send-job-email",
+        {
+          body: {
+            ...payload,
+            jobId: insertedJobs?.[0]?.id ?? null,
+            postedAt: new Date().toISOString(),
+          },
+        },
+      );
+
+      if (emailError) {
+        console.error(
+          "Job was published, but email notification failed:",
+          emailError,
+        );
+        emailNotice =
+          " However, the email notification could not be sent. Check the send-job-email function and email provider settings.";
+      }
+
+      setMessage({
+        type: emailError ? "warning" : "success",
+        text: emailError
+          ? `Job published successfully.${emailNotice}`
+          : "Job published successfully. Job details were emailed to karthicknaren167@gmail.com.",
       });
+
+      setFormData(createEmptyForm());
+      setExtractUrl("");
+      setNeedsReview(false);
+    } catch (error) {
+      console.error("Error publishing job:", error);
+
+      setMessage({
+        type: "danger",
+        text: `Could not publish job: ${error.message || "Please try again."}`,
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this job listing?')) return;
+    if (deletingId !== null) return;
 
-    const { error } = await supabase.from('jobs').delete().eq('id', id);
+    const confirmed = window.confirm(
+      "Are you sure you want to permanently delete this job listing?",
+    );
 
-    if (error) {
-      alert(`Error deleting job: ${error.message}`);
-    } else {
-      setJobs(jobs.filter((job) => job.id !== id));
+    if (!confirmed) return;
+
+    setDeletingId(id);
+    setMessage({ type: "", text: "" });
+
+    try {
+      const { error } = await supabase.from("jobs").delete().eq("id", id);
+
+      if (error) throw error;
+
+      setJobs((previous) => previous.filter((job) => job.id !== id));
+
+      setMessage({
+        type: "success",
+        text: "Job listing deleted.",
+      });
+    } catch (error) {
+      console.error("Error deleting job:", error);
+
+      setMessage({
+        type: "danger",
+        text: "Could not delete this job. Please try again.",
+      });
+    } finally {
+      setDeletingId(null);
     }
   };
 
-  // Handle Share Functionality
-  const handleShare = (job) => {
+  const handleShare = async (job) => {
     const jobUrl = `${window.location.origin}/jobs/${job.id}`;
 
-    if (navigator.share) {
-      navigator
-        .share({
+    try {
+      if (navigator.share) {
+        await navigator.share({
           title: job.title,
-          text: `Check out this opening for ${job.title} at ${job.company}!`,
+          text: `Check out ${job.title} at ${job.company} on JobNest.`,
           url: jobUrl,
-        })
-        .catch((err) => console.error('Error sharing job:', err));
-    } else {
-      navigator.clipboard.writeText(jobUrl);
-      alert('Job link copied to clipboard!');
+        });
+      } else {
+        await navigator.clipboard.writeText(jobUrl);
+
+        setMessage({
+          type: "success",
+          text: "Job link copied to clipboard.",
+        });
+      }
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.error("Share error:", error);
+        setMessage({
+          type: "danger",
+          text: "Unable to share or copy this job link.",
+        });
+      }
     }
   };
 
-  // 🔒 PASSWORD LOGIN SCREEN
   if (!isAuthenticated) {
     return (
-      <div className="container py-5 d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
-        <div className="card border-0 shadow-lg p-4 rounded-4" style={{ maxWidth: '400px', width: '100%' }}>
+      <div
+        className="container py-5 d-flex justify-content-center align-items-center"
+        style={{ minHeight: "60vh" }}
+      >
+        <div
+          className="card border-0 shadow-lg p-4 rounded-4"
+          style={{ maxWidth: "400px", width: "100%" }}
+        >
           <h4 className="fw-bold mb-3 text-center">Admin Access</h4>
-          <p className="text-muted small text-center mb-4">Please enter your master password to access the portal dashboard.</p>
 
-          {authError && <div className="alert alert-danger py-2 small">{authError}</div>}
+          <p className="text-muted small text-center mb-4">
+            Enter your admin password to continue.
+          </p>
+
+          {authError && (
+            <div className="alert alert-danger py-2 small">{authError}</div>
+          )}
 
           <form onSubmit={handleLogin}>
             <div className="mb-3">
@@ -225,9 +469,11 @@ export const Admin = () => {
                 placeholder="Enter password"
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
+                autoComplete="current-password"
                 required
               />
             </div>
+
             <button type="submit" className="btn btn-primary w-100 py-2">
               Unlock Dashboard
             </button>
@@ -237,80 +483,118 @@ export const Admin = () => {
     );
   }
 
-  // 🔓 AUTHENTICATED DASHBOARD SCREEN
   return (
     <>
       <Helmet>
         <title>Admin Dashboard | JobNest</title>
+        <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <div className="container py-5">
-        <div className="d-flex justify-content-between align-items-center mb-4">
+      <main className="container py-5">
+        <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
           <h2 className="fw-bold m-0">Admin Dashboard</h2>
 
-          <div className="d-flex gap-2">
+          <div className="d-flex flex-wrap gap-2">
             <div className="btn-group" role="group">
               <button
                 type="button"
-                className={`btn ${activeTab === 'post' ? 'btn-primary' : 'btn-outline-primary'}`}
-                onClick={() => setActiveTab('post')}
+                className={`btn ${activeTab === "post" ? "btn-primary" : "btn-outline-primary"}`}
+                onClick={() => {
+                  setActiveTab("post");
+                  setMessage({ type: "", text: "" });
+                }}
               >
                 ➕ Post Job
               </button>
+
               <button
                 type="button"
-                className={`btn ${activeTab === 'manage' ? 'btn-primary' : 'btn-outline-primary'}`}
-                onClick={() => setActiveTab('manage')}
+                className={`btn ${activeTab === "manage" ? "btn-primary" : "btn-outline-primary"}`}
+                onClick={() => {
+                  setActiveTab("manage");
+                  setMessage({ type: "", text: "" });
+                }}
               >
                 📋 Manage Jobs ({jobs.length})
               </button>
             </div>
 
-            <button onClick={handleLogout} className="btn btn-outline-danger">
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="btn btn-outline-danger"
+            >
               Logout
             </button>
           </div>
         </div>
 
-        {/* TAB 1: POST A JOB FORM */}
-        {activeTab === 'post' && (
-          <div className="card border-0 shadow-sm p-4 rounded-4">
+        {message.text && (
+          <div
+            className={`alert alert-${message.type} alert-dismissible`}
+            role="status"
+          >
+            {message.text}
+
+            <button
+              type="button"
+              className="btn-close"
+              aria-label="Dismiss message"
+              onClick={() => setMessage({ type: "", text: "" })}
+            />
+          </div>
+        )}
+
+        {activeTab === "post" && (
+          <section className="card border-0 shadow-sm p-4 rounded-4">
             <h4 className="fw-bold mb-3">Create Job Listing</h4>
 
-            {/* ⚡ AI AUTO-FILL FROM LINK */}
-            <div className="card bg-light border-0 p-3 mb-4 rounded-3 shadow-none">
+            <div className="card bg-light border-0 p-3 mb-4 rounded-3">
               <label className="form-label fw-bold small text-secondary">
-                ⚡ Auto-Fill Details from Career Link (AI Extraction)
+                ⚡ Auto-Fill from Official Job URL
               </label>
+
+              <p className="small text-secondary mb-3">
+                Extract details from the employer's job listing. Verify all
+                information before publishing.
+              </p>
+
               <div className="input-group">
                 <input
                   type="url"
                   className="form-control"
-                  placeholder="Paste career portal link (e.g., https://careers.company.com/job/1234)..."
+                  placeholder="https://company.com/careers/job/123"
                   value={extractUrl}
                   onChange={(e) => setExtractUrl(e.target.value)}
+                  disabled={extracting}
                 />
+
                 <button
                   type="button"
-                  className="btn btn-primary fw-semibold px-4"
+                  className="btn btn-primary fw-semibold"
                   onClick={handleAutoFill}
-                  disabled={extracting}
+                  disabled={extracting || loading}
                 >
                   {extracting ? (
                     <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        aria-hidden="true"
+                      />
                       Extracting...
                     </>
                   ) : (
-                    'Auto-Fill Details'
+                    "Auto-Fill Details"
                   )}
                 </button>
               </div>
             </div>
 
-            {message.text && (
-              <div className={`alert alert-${message.type} alert-dismissible fade show`}>
-                {message.text}
+            {needsReview && (
+              <div className="alert alert-warning">
+                <strong>Review required:</strong> Compare the extracted
+                information with the original company listing. Correct
+                inaccuracies and clear fields that are not verified.
               </div>
             )}
 
@@ -329,7 +613,9 @@ export const Admin = () => {
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold">Company Name *</label>
+                  <label className="form-label fw-semibold">
+                    Company Name *
+                  </label>
                   <input
                     type="text"
                     name="company"
@@ -348,27 +634,42 @@ export const Admin = () => {
                     className="form-control"
                     value={formData.location}
                     onChange={handleChange}
+                    placeholder="Enter verified location"
                     required
                   />
                 </div>
 
                 <div className="col-md-4">
                   <label className="form-label fw-semibold">Job Type</label>
-                  <select name="type" className="form-select" value={formData.type} onChange={handleChange}>
-                    <option value="Full Time">Full Time</option>
-                    <option value="Part Time">Part Time</option>
-                    <option value="Contract">Contract</option>
-                    <option value="Internship">Internship</option>
+                  <select
+                    name="type"
+                    className="form-select"
+                    value={formData.type}
+                    onChange={handleChange}
+                  >
+                    <option value="">Not specified</option>
+                    {JOB_TYPES.map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
                 <div className="col-md-4">
                   <label className="form-label fw-semibold">Category</label>
-                  <select name="category" className="form-select" value={formData.category} onChange={handleChange}>
-                    <option value="IT & Software">IT & Software</option>
-                    <option value="Engineering">Engineering</option>
-                    <option value="Finance">Finance</option>
-                    <option value="Marketing">Marketing</option>
+                  <select
+                    name="category"
+                    className="form-select"
+                    value={formData.category}
+                    onChange={handleChange}
+                  >
+                    <option value="">Not specified</option>
+                    {JOB_CATEGORIES.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -378,19 +679,21 @@ export const Admin = () => {
                     type="text"
                     name="salary"
                     className="form-control"
-                    placeholder="e.g. 4 to 7 LPA"
+                    placeholder="Leave blank if not stated"
                     value={formData.salary}
                     onChange={handleChange}
                   />
                 </div>
 
                 <div className="col-md-4">
-                  <label className="form-label fw-semibold">Experience Level</label>
+                  <label className="form-label fw-semibold">
+                    Experience Level
+                  </label>
                   <input
                     type="text"
                     name="experience"
                     className="form-control"
-                    placeholder="e.g. 0-2 Years"
+                    placeholder="Leave blank if not stated"
                     value={formData.experience}
                     onChange={handleChange}
                   />
@@ -398,42 +701,44 @@ export const Admin = () => {
 
                 <div className="col-md-4">
                   <label className="form-label fw-semibold">
-                    Passed Out Year <span className="text-muted fw-normal">(Optional)</span>
+                    Passed Out Year
                   </label>
-                  <select
+                  <input
+                    type="text"
                     name="passout_year"
-                    className="form-select"
+                    className="form-control"
+                    placeholder="e.g. 2027"
+                    min="1900"
+                    max="2100"
+                    step="1"
                     value={formData.passout_year}
                     onChange={handleChange}
-                  >
-                    <option value="">Any Batch / Not Specified</option>
-                    <option value="2026">2026</option>
-                    <option value="2025">2025</option>
-                    <option value="2024">2024</option>
-                    <option value="2023">2023</option>
-                    <option value="2022">2022</option>
-                  </select>
+                  />
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold">Skills (Comma separated)</label>
+                  <label className="form-label fw-semibold">
+                    Skills (comma separated)
+                  </label>
                   <input
                     type="text"
                     name="skills"
                     className="form-control"
-                    placeholder="coding, testing, support"
+                    placeholder="Verified skills only"
                     value={formData.skills}
                     onChange={handleChange}
                   />
                 </div>
 
                 <div className="col-md-6">
-                  <label className="form-label fw-semibold">Apply Link URL *</label>
+                  <label className="form-label fw-semibold">
+                    Official Job / Apply URL *
+                  </label>
                   <input
                     type="url"
                     name="applyLink"
                     className="form-control"
-                    placeholder="https://company.com/careers/apply"
+                    placeholder="https://company.com/careers/job/123"
                     value={formData.applyLink}
                     onChange={handleChange}
                     required
@@ -441,35 +746,58 @@ export const Admin = () => {
                 </div>
 
                 <div className="col-12">
-                  <label className="form-label fw-semibold">Job Description *</label>
+                  <label className="form-label fw-semibold">
+                    Job Description *
+                  </label>
                   <textarea
                     name="description"
-                    rows="6"
+                    rows={8}
                     className="form-control"
+                    placeholder="Write an accurate description based on the official listing."
                     value={formData.description}
                     onChange={handleChange}
                     required
-                  ></textarea>
+                  />
+                  <small className="text-muted">
+                    Check that the summary preserves the employer's actual
+                    responsibilities, qualifications, and eligibility.
+                  </small>
                 </div>
 
                 <div className="col-12 mt-4">
-                  <button type="submit" className="btn btn-primary px-4 py-2 fw-semibold" disabled={loading}>
-                    {loading ? 'Publishing...' : 'Publish Job Listing'}
+                  <button
+                    type="submit"
+                    className="btn btn-primary px-4 py-2 fw-semibold"
+                    disabled={loading || extracting}
+                  >
+                    {loading ? "Publishing..." : "Publish Job Listing"}
                   </button>
                 </div>
               </div>
             </form>
-          </div>
+          </section>
         )}
 
-        {/* TAB 2: MANAGE & DELETE JOBS */}
-        {activeTab === 'manage' && (
-          <div className="card border-0 shadow-sm p-4 rounded-4">
-            <h4 className="fw-bold mb-3">Posted Job Openings</h4>
+        {activeTab === "manage" && (
+          <section className="card border-0 shadow-sm p-4 rounded-4">
+            <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+              <h4 className="fw-bold mb-0">Posted Job Openings</h4>
+
+              <button
+                type="button"
+                className="btn btn-outline-primary btn-sm"
+                onClick={fetchJobs}
+                disabled={fetchingJobs}
+              >
+                {fetchingJobs ? "Refreshing..." : "Refresh"}
+              </button>
+            </div>
 
             {fetchingJobs ? (
               <div className="text-center py-5">
-                <div className="spinner-border text-primary" role="status"></div>
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading jobs...</span>
+                </div>
                 <p className="mt-2 text-muted">Loading posted jobs...</p>
               </div>
             ) : jobs.length === 0 ? (
@@ -488,48 +816,51 @@ export const Admin = () => {
                       <th className="text-end">Actions</th>
                     </tr>
                   </thead>
+
                   <tbody>
                     {jobs.map((job) => (
                       <tr key={job.id}>
                         <td className="fw-bold">{job.title}</td>
                         <td>{job.company}</td>
                         <td>
-                          {job.passout_year && String(job.passout_year).toLowerCase() !== 'any' ? (
+                          {job.passout_year ? (
                             <span className="badge bg-info-subtle text-info border">
                               {job.passout_year}
                             </span>
                           ) : (
                             <span className="badge bg-light text-secondary border">
-                              Any
+                              Not specified
                             </span>
                           )}
                         </td>
-                        <td>
-                          <span className="badge bg-light text-dark border">{job.type}</span>
-                        </td>
-                        <td className="text-end">
+                        <td>{job.type || "Not specified"}</td>
+                        <td className="text-end text-nowrap">
                           <button
+                            type="button"
                             onClick={() => handleShare(job)}
                             className="btn btn-sm btn-outline-primary me-2"
-                            title="Share Job Link"
-                            type="button"
                           >
                             🔗 Share
                           </button>
-                          <a
-                            href={job.applyLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn btn-sm btn-outline-secondary me-2"
-                          >
-                            Link ↗
-                          </a>
+
+                          {job.applyLink && (
+                            <a
+                              href={job.applyLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn btn-sm btn-outline-secondary me-2"
+                            >
+                              Official Link ↗
+                            </a>
+                          )}
+
                           <button
+                            type="button"
                             onClick={() => handleDelete(job.id)}
                             className="btn btn-sm btn-danger"
-                            type="button"
+                            disabled={deletingId !== null}
                           >
-                            Remove
+                            {deletingId === job.id ? "Deleting..." : "Remove"}
                           </button>
                         </td>
                       </tr>
@@ -538,9 +869,9 @@ export const Admin = () => {
                 </table>
               </div>
             )}
-          </div>
+          </section>
         )}
-      </div>
+      </main>
     </>
   );
 };

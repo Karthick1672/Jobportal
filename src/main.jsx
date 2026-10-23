@@ -10,6 +10,8 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "aos/dist/aos.css";
 import "./styles/global.css";
 
+
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <HelmetProvider>

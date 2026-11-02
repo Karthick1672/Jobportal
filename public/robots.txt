@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /login
+Disallow: /register
+
+User-agent: Mediapartners-Google
+Allow: /
 
 Sitemap: https://jobnest.work/sitemap.xml

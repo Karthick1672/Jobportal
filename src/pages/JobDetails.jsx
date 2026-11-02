@@ -25,7 +25,6 @@ export const JobDetails = () => {
 
     if (error) {
       console.error("Error fetching job details:", error.message);
-
       setJob(null);
     } else {
       setJob(data);
@@ -57,7 +56,6 @@ export const JobDetails = () => {
         }, 2500);
       }
     } catch (error) {
-      // Ignore cancellation from native share dialog
       if (error?.name !== "AbortError") {
         console.error("Error sharing job:", error);
       }
@@ -109,7 +107,7 @@ export const JobDetails = () => {
       <>
         <Helmet>
           <title>Loading Job | JobNest</title>
-          <meta name="robots" content="noindex, follow" />
+          <meta name="robots" content="noindex, nofollow" />
         </Helmet>
 
         <main className="container py-5">
@@ -117,7 +115,6 @@ export const JobDetails = () => {
             <div className="spinner-border text-primary" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
-
             <p className="mt-3 text-muted">Loading job details...</p>
           </div>
         </main>
@@ -130,7 +127,6 @@ export const JobDetails = () => {
       <>
         <Helmet>
           <title>Job Not Found | JobNest</title>
-
           <meta name="robots" content="noindex, follow" />
         </Helmet>
 
@@ -140,14 +136,11 @@ export const JobDetails = () => {
             style={{ maxWidth: "550px" }}
           >
             <i className="bi bi-briefcase fs-1 text-muted"></i>
-
             <h1 className="h3 fw-bold mt-3">Job Listing Not Found</h1>
-
             <p className="text-secondary">
               This job may have been removed, expired, or the link may be
               incorrect.
             </p>
-
             <Link to="/jobs" className="btn btn-primary mt-2">
               Browse Current Jobs
             </Link>
@@ -158,10 +151,7 @@ export const JobDetails = () => {
   }
 
   const passoutYear = job.passout_year ?? job.passoutYear;
-
   const applyUrl = job.applyLink ?? job.apply_link;
-
-  // const articleUrl = `https://jobnest.work/jobs/${job.id}`;
   const articleUrl = `https://jobnest.work/jobs/${job.id}`;
 
   const metaDescription = [
@@ -194,7 +184,9 @@ export const JobDetails = () => {
           content={`View details for ${metaDescription}. Check eligibility, skills, experience, location and application information on JobNest.`}
         />
 
-        <meta name="robots" content="index, follow" />
+        {/* Prevent thin aggregated job pages from failing AdSense review */}
+        <meta name="robots" content="noindex, follow" />
+        <meta name="googlebot" content="noindex, follow" />
 
         <link rel="canonical" href={articleUrl} />
 
@@ -202,16 +194,12 @@ export const JobDetails = () => {
           property="og:title"
           content={`${job.title}${job.company ? ` at ${job.company}` : ""}`}
         />
-
         <meta
           property="og:description"
           content={`View job details, requirements and application information for ${job.title}.`}
         />
-
         <meta property="og:type" content="website" />
-
         <meta property="og:url" content={articleUrl} />
-
         <meta property="og:site_name" content="JobNest" />
       </Helmet>
 
@@ -225,13 +213,11 @@ export const JobDetails = () => {
                   Home
                 </Link>
               </li>
-
               <li className="breadcrumb-item">
                 <Link to="/jobs" className="text-decoration-none">
                   Jobs
                 </Link>
               </li>
-
               <li className="breadcrumb-item active" aria-current="page">
                 {job.title}
               </li>
@@ -268,7 +254,6 @@ export const JobDetails = () => {
                   {/* JOB TITLE */}
                   <header className="mb-4">
                     <h1 className="display-6 fw-bold mb-2">{job.title}</h1>
-
                     {job.company && (
                       <p className="h5 text-secondary mb-0">
                         <i className="bi bi-building me-2"></i>
@@ -284,10 +269,8 @@ export const JobDetails = () => {
                         <div className="col-md-6">
                           <div className="d-flex gap-3">
                             <i className="bi bi-geo-alt text-primary"></i>
-
                             <div>
                               <div className="small text-muted">Location</div>
-
                               <div className="fw-semibold">{job.location}</div>
                             </div>
                           </div>
@@ -298,10 +281,8 @@ export const JobDetails = () => {
                         <div className="col-md-6">
                           <div className="d-flex gap-3">
                             <i className="bi bi-briefcase text-primary"></i>
-
                             <div>
                               <div className="small text-muted">Experience</div>
-
                               <div className="fw-semibold">
                                 {job.experience}
                               </div>
@@ -314,10 +295,8 @@ export const JobDetails = () => {
                         <div className="col-md-6">
                           <div className="d-flex gap-3">
                             <i className="bi bi-cash-stack text-primary"></i>
-
                             <div>
                               <div className="small text-muted">Salary</div>
-
                               <div className="fw-semibold">{job.salary}</div>
                             </div>
                           </div>
@@ -328,12 +307,10 @@ export const JobDetails = () => {
                         <div className="col-md-6">
                           <div className="d-flex gap-3">
                             <i className="bi bi-mortarboard text-primary"></i>
-
                             <div>
                               <div className="small text-muted">
                                 Graduation / Batch
                               </div>
-
                               <div className="fw-semibold">{passoutYear}</div>
                             </div>
                           </div>
@@ -345,7 +322,6 @@ export const JobDetails = () => {
                   {/* DESCRIPTION */}
                   <section className="mb-5">
                     <h2 className="h4 fw-bold mb-3">Job Description</h2>
-
                     {renderFormattedDescription(job.description)}
                   </section>
 
@@ -353,11 +329,9 @@ export const JobDetails = () => {
                   {skills.length > 0 && (
                     <section className="mb-5">
                       <h2 className="h4 fw-bold mb-3">Skills Mentioned</h2>
-
                       <p className="text-secondary small mb-3">
                         Skills listed for this opportunity:
                       </p>
-
                       <div className="d-flex flex-wrap gap-2">
                         {skills.map((skill, index) => (
                           <span
@@ -374,24 +348,18 @@ export const JobDetails = () => {
                   {/* BEFORE APPLYING */}
                   <section className="bg-light rounded-4 p-4">
                     <h2 className="h5 fw-bold mb-3">Before You Apply</h2>
-
                     <p
                       className="text-secondary mb-3"
-                      style={{
-                        lineHeight: "1.8",
-                      }}
+                      style={{ lineHeight: "1.8" }}
                     >
                       Review the employer's application page carefully before
                       applying. Requirements, deadlines, salary, location,
                       eligibility, and other details can change after a listing
                       appears on JobNest.
                     </p>
-
                     <p
                       className="text-secondary small mb-0"
-                      style={{
-                        lineHeight: "1.8",
-                      }}
+                      style={{ lineHeight: "1.8" }}
                     >
                       JobNest is a job discovery and career information platform
                       and does not guarantee interviews, job offers, or
@@ -426,12 +394,9 @@ export const JobDetails = () => {
                   <h2 className="h5 fw-bold mb-2">
                     Interested in this position?
                   </h2>
-
                   <p
                     className="text-secondary small"
-                    style={{
-                      lineHeight: "1.7",
-                    }}
+                    style={{ lineHeight: "1.7" }}
                   >
                     Review the complete requirements and continue to the
                     external application page when you're ready.
@@ -480,7 +445,6 @@ export const JobDetails = () => {
                   <div className="small text-secondary">
                     <div className="d-flex gap-2 mb-3">
                       <i className="bi bi-shield-check text-primary"></i>
-
                       <span>
                         Verify important information on the employer's
                         application page.
@@ -489,7 +453,6 @@ export const JobDetails = () => {
 
                     <div className="d-flex gap-2">
                       <i className="bi bi-exclamation-triangle text-warning"></i>
-
                       <span>
                         Be cautious of anyone requesting payment in exchange for
                         a job offer.
@@ -503,7 +466,6 @@ export const JobDetails = () => {
               <div className="card border-0 shadow-sm rounded-4">
                 <div className="card-body p-4">
                   <h2 className="h5 fw-bold mb-3">Prepare Before Applying</h2>
-
                   <div className="d-grid gap-2">
                     <Link
                       to="/resume-checker"
@@ -512,7 +474,11 @@ export const JobDetails = () => {
                       Resume Checker
                     </Link>
 
-                    <Link to="/guides" className="btn btn-outline-primary">
+                    {/* Fixed broken route from /guides to /career-guides */}
+                    <Link
+                      to="/career-guides"
+                      className="btn btn-outline-primary"
+                    >
                       Career Guides
                     </Link>
 

@@ -4,35 +4,53 @@ import { Helmet } from "react-helmet-async";
 import { guidesData } from "../data/guidesData";
 
 export const CareerGuides = () => {
+  const pageUrl = "https://jobnest.work/career-guides";
+
+  // Schema.org structured data for AdSense & Search crawlers
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "JobNest Career Guides & Preparation Resources",
+    description:
+      "Comprehensive, practical guides for resume building, technical interviews, off-campus drives, and hiring processes.",
+    itemListElement: guidesData.map((guide, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: `https://jobnest.work/career-guides/${guide.slug}`,
+      name: guide.title,
+    })),
+  };
+
   return (
     <>
       <Helmet>
-        <title>Career Guides | JobNest</title>
+        <title>Career Guides & Interview Roadmaps | JobNest</title>
 
         <meta
           name="description"
-          content="Explore practical JobNest career guides covering resumes, interviews, job search strategies, professional profiles, and career preparation."
+          content="Explore practical JobNest career guides covering ATS resumes, technical interviews, off-campus job hunting, and professional career preparation."
         />
 
         <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
 
-        <link rel="canonical" href="https://jobnest.work/guides" />
-
-        <meta property="og:title" content="Career Guides | JobNest" />
+        <link rel="canonical" href={pageUrl} />
 
         <meta
-          property="og:description"
-          content="Practical career advice for resumes, interviews, job searching, and professional development."
+          property="og:title"
+          content="Career Guides & Interview Roadmaps | JobNest"
         />
-
+        <meta
+          property="og:description"
+          content="Practical, in-depth career advice for resumes, interviews, off-campus drives, and professional development."
+        />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:site_name" content="JobNest" />
 
-        
-<meta
-  property="og:url"
-  content="https://jobnest.work/guides"
-/>
-
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
       </Helmet>
 
       <main>
@@ -41,7 +59,7 @@ export const CareerGuides = () => {
           <div className="container py-5">
             <div className="text-center mx-auto" style={{ maxWidth: "850px" }}>
               <span className="badge bg-primary-subtle text-primary rounded-pill px-3 py-2 mb-3">
-                Career Resources
+                Career Resources & Roadmaps
               </span>
 
               <h1 className="display-5 fw-bold mb-3">
@@ -52,9 +70,9 @@ export const CareerGuides = () => {
                 className="lead text-secondary mb-0"
                 style={{ lineHeight: "1.8" }}
               >
-                Learn how to build a stronger resume, prepare for interviews,
-                search for jobs effectively, improve your professional profile,
-                and make better career decisions with practical JobNest guides.
+                Learn how to build a stronger resume, prepare for technical & HR
+                interviews, navigate off-campus drives, and make informed career
+                decisions with actionable JobNest blueprints.
               </p>
             </div>
           </div>
@@ -74,10 +92,10 @@ export const CareerGuides = () => {
                 fontSize: "1.05rem",
               }}
             >
-              Finding the right job involves more than simply submitting
-              applications. Job seekers need a clear resume, a professional
-              online presence, strong interview preparation, and a good
-              understanding of the roles they are applying for.
+              Securing the right role requires more than mass-applying. Job
+              seekers need clear resume architectures, role-tailored technical
+              preparation, behavioral interview strategies, and an accurate
+              understanding of modern hiring patterns.
             </p>
 
             <p
@@ -87,10 +105,10 @@ export const CareerGuides = () => {
                 fontSize: "1.05rem",
               }}
             >
-              JobNest Career Guides are designed to help freshers and
-              experienced professionals understand these steps through practical
-              explanations, examples, checklists, and actionable strategies that
-              can be used during a real job search.
+              JobNest Career Guides provide fresh graduates and working
+              professionals with structured walkthroughs, checklists, ATS-safe
+              formatting tips, and interview questions sourced from actual tech
+              recruitment drives.
             </p>
           </div>
         </section>
@@ -101,7 +119,8 @@ export const CareerGuides = () => {
             <h2 className="fw-bold h2 mb-2">Latest Career Guides</h2>
 
             <p className="text-secondary mb-0">
-              Browse our latest job-search and career development resources.
+              Browse our latest job-search, resume, and interview preparation
+              resources.
             </p>
           </div>
 
@@ -120,7 +139,7 @@ export const CareerGuides = () => {
 
                     <h3 className="h5 fw-bold mb-3">
                       <Link
-                        to={`/guides/${guide.slug}`}
+                        to={`/career-guides/${guide.slug}`}
                         className="text-dark text-decoration-none"
                       >
                         {guide.title}
@@ -142,7 +161,7 @@ export const CareerGuides = () => {
                         </span>
 
                         <Link
-                          to={`/guides/${guide.slug}`}
+                          to={`/career-guides/${guide.slug}`}
                           className="text-decoration-none fw-semibold small"
                         >
                           Read Guide →
@@ -166,8 +185,8 @@ export const CareerGuides = () => {
               <h2 className="fw-bold h2 mb-3">Explore Career Resources</h2>
 
               <p className="text-secondary mb-0">
-                Focus on the area of your job search that needs the most
-                improvement.
+                Focus on the specific area of your job search that needs
+                attention.
               </p>
             </div>
 
@@ -189,13 +208,13 @@ export const CareerGuides = () => {
                     <h3 className="h4 fw-bold">Resume Guidance</h3>
 
                     <p className="text-secondary" style={{ lineHeight: "1.8" }}>
-                      Learn how to structure your resume, describe your skills,
-                      highlight projects, and tailor your application for
-                      different job roles.
+                      Learn how to structure ATS-friendly resumes, describe
+                      actionable outcomes, highlight key technical projects, and
+                      tailor applications effectively.
                     </p>
 
                     <Link
-                      to="/guides/ats-friendly-resume-guide"
+                      to="/career-guides/ats-friendly-resume-guide"
                       className="text-decoration-none fw-semibold"
                     >
                       Explore Resume Guide →
@@ -221,12 +240,13 @@ export const CareerGuides = () => {
                     <h3 className="h4 fw-bold">Interview Preparation</h3>
 
                     <p className="text-secondary" style={{ lineHeight: "1.8" }}>
-                      Prepare for common HR, behavioural, technical, and
-                      role-specific interview questions with practical examples.
+                      Prepare for common HR, behavioral, technical rounds, and
+                      company-specific interview patterns with structured,
+                      practical responses.
                     </p>
 
                     <Link
-                      to="/guides/top-interview-questions-freshers-2026"
+                      to="/career-guides/top-interview-questions-freshers-2026"
                       className="text-decoration-none fw-semibold"
                     >
                       Explore Interview Guide →
@@ -252,13 +272,13 @@ export const CareerGuides = () => {
                     <h3 className="h4 fw-bold">Job Search Strategies</h3>
 
                     <p className="text-secondary" style={{ lineHeight: "1.8" }}>
-                      Discover better ways to find opportunities, evaluate job
-                      descriptions, avoid suspicious listings, and improve your
-                      application process.
+                      Discover effective strategies for identifying off-campus
+                      drives, vetting genuine recruiter outreach, avoiding
+                      scams, and managing job submissions.
                     </p>
 
                     <Link
-                      to="/guides/off-campus-job-hunting-strategy"
+                      to="/career-guides/off-campus-job-hunting-strategy"
                       className="text-decoration-none fw-semibold"
                     >
                       Explore Job Search Guide →

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AOS from "aos";
 
 import { MainLayout } from "./layouts/MainLayout";
@@ -49,8 +49,13 @@ export default function App() {
           <Route path="categories" element={<Categories />} />
           <Route path="companies" element={<Companies />} />
 
-          {/* Career Guides */}
-          <Route path="guides" element={<CareerGuides />} />
+          {/* Career Guides (handles both /career-guides and /guides without 404s) */}
+          <Route path="career-guides" element={<CareerGuides />} />
+          <Route path="career-guides/:slug" element={<GuideDetail />} />
+          <Route
+            path="guides"
+            element={<Navigate to="/career-guides" replace />}
+          />
           <Route path="guides/:slug" element={<GuideDetail />} />
 
           {/* Resume Checker */}
@@ -67,9 +72,17 @@ export default function App() {
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
 
-          {/* Legal */}
+          {/* Legal (handles /privacy and /privacy-policy) */}
           <Route path="privacy" element={<PrivacyPolicy />} />
+          <Route
+            path="privacy-policy"
+            element={<Navigate to="/privacy" replace />}
+          />
           <Route path="terms" element={<Terms />} />
+          <Route
+            path="terms-and-conditions"
+            element={<Navigate to="/terms" replace />}
+          />
 
           {/* 404 - keep this last */}
           <Route path="*" element={<NotFound />} />

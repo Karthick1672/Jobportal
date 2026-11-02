@@ -32,14 +32,20 @@ export const Categories = () => {
 
     jobs.forEach((job) => {
       if (!job.category) return;
-
       const category = job.category.trim();
-
       counts[category] = (counts[category] || 0) + 1;
     });
 
     return counts;
   }, [jobs]);
+
+  // Filter out any category with 0 jobs to avoid thin directory flags
+  const activeCategories = useMemo(() => {
+    return categoriesData.filter((cat) => {
+      const count = categoryCounts[cat.name] || 0;
+      return count > 0;
+    });
+  }, [categoryCounts]);
 
   const totalJobs = jobs.length;
 
@@ -47,27 +53,20 @@ export const Categories = () => {
     <>
       <Helmet>
         <title>Browse Job Categories | JobNest</title>
-
         <meta
           name="description"
-          content="Browse jobs by category on JobNest. Explore opportunities across technology, engineering, finance, marketing, and other career fields."
+          content="Browse verified job opportunities by category on JobNest. Explore roles across IT, software engineering, and technology fields."
         />
-
         <meta name="robots" content="index, follow" />
-
         <link rel="canonical" href="https://jobnest.work/categories" />
 
         <meta property="og:title" content="Browse Job Categories | JobNest" />
-
         <meta
           property="og:description"
           content="Explore current job opportunities by career category and find roles that match your skills and interests."
         />
-
         <meta property="og:type" content="website" />
-
         <meta property="og:url" content="https://jobnest.work/categories" />
-
         <meta property="og:site_name" content="JobNest" />
       </Helmet>
 
@@ -79,11 +78,9 @@ export const Categories = () => {
               <span className="badge bg-primary-subtle text-primary rounded-pill px-3 py-2 mb-3">
                 Job Categories
               </span>
-
               <h1 className="display-5 fw-bold mb-3">
                 Explore Jobs by Career Category
               </h1>
-
               <p
                 className="lead text-secondary mb-0"
                 style={{ lineHeight: "1.8" }}
@@ -102,10 +99,9 @@ export const Categories = () => {
               <div className="col-md-5">
                 <div className="border rounded-4 p-4 text-center h-100">
                   <div className="h2 fw-bold text-primary mb-1">
-                    {categoriesData.length}
+                    {activeCategories.length}
                   </div>
-
-                  <p className="text-secondary mb-0">Career Categories</p>
+                  <p className="text-secondary mb-0">Active Categories</p>
                 </div>
               </div>
 
@@ -114,7 +110,6 @@ export const Categories = () => {
                   <div className="h2 fw-bold text-primary mb-1">
                     {totalJobs}
                   </div>
-
                   <p className="text-secondary mb-0">Current Job Listings</p>
                 </div>
               </div>
@@ -122,11 +117,10 @@ export const Categories = () => {
           </section>
         )}
 
-        {/* CATEGORIES */}
+        {/* CATEGORIES GRID */}
         <section className="container py-5">
           <div className="mb-5 text-center">
             <h2 className="h3 fw-bold mb-2">Browse Career Fields</h2>
-
             <p
               className="text-secondary mx-auto mb-0"
               style={{ maxWidth: "700px" }}
@@ -141,12 +135,20 @@ export const Categories = () => {
               <div className="spinner-border text-primary" role="status">
                 <span className="visually-hidden">Loading...</span>
               </div>
-
               <p className="text-muted mt-3">Loading job categories...</p>
+            </div>
+          ) : activeCategories.length === 0 ? (
+            <div className="text-center py-5">
+              <p className="text-muted">
+                No active categories found right now.
+              </p>
+              <Link to="/jobs" className="btn btn-primary">
+                Browse All Jobs
+              </Link>
             </div>
           ) : (
             <div className="row g-4">
-              {categoriesData.map((cat) => {
+              {activeCategories.map((cat) => {
                 const jobCount = categoryCounts[cat.name] || 0;
 
                 return (
@@ -170,7 +172,6 @@ export const Categories = () => {
                             <h3 className="h5 fw-bold text-dark mb-1">
                               {cat.name}
                             </h3>
-
                             <span className="text-primary small fw-semibold">
                               {jobCount === 1
                                 ? "1 Current Job"
@@ -187,24 +188,15 @@ export const Categories = () => {
                         </p>
 
                         <div className="mt-auto pt-3 border-top">
-                          {jobCount > 0 ? (
-                            <Link
-                              to={`/jobs?category=${encodeURIComponent(
-                                cat.name,
-                              )}`}
-                              className="btn btn-outline-primary w-100 fw-semibold"
-                            >
-                              Explore Jobs
-                              <i className="bi bi-arrow-right ms-2"></i>
-                            </Link>
-                          ) : (
-                            <Link
-                              to="/jobs"
-                              className="btn btn-outline-secondary w-100"
-                            >
-                              Browse All Jobs
-                            </Link>
-                          )}
+                          <Link
+                            to={`/jobs?category=${encodeURIComponent(
+                              cat.name,
+                            )}`}
+                            className="btn btn-outline-primary w-100 fw-semibold"
+                          >
+                            Explore Jobs
+                            <i className="bi bi-arrow-right ms-2"></i>
+                          </Link>
                         </div>
                       </div>
                     </article>
@@ -222,14 +214,12 @@ export const Categories = () => {
               <h2 className="h3 fw-bold mb-4">
                 Finding the Right Job Category
               </h2>
-
               <p className="text-secondary" style={{ lineHeight: "1.9" }}>
                 A job category groups together roles that share similar skills,
                 responsibilities, or career paths. Browsing by category can make
                 it easier to focus your search instead of reviewing unrelated
                 opportunities.
               </p>
-
               <p className="text-secondary mb-0" style={{ lineHeight: "1.9" }}>
                 Before applying, read the complete job description and check the
                 required skills, experience, location, eligibility, and other
@@ -246,14 +236,11 @@ export const Categories = () => {
             <div className="col-lg-4">
               <div className="border rounded-4 p-4 h-100">
                 <i className="bi bi-search fs-3 text-primary"></i>
-
                 <h2 className="h5 fw-bold mt-3">Search Beyond Categories</h2>
-
                 <p className="text-secondary small mb-3">
                   Search JobNest by job title, company, location, or keyword
                   when you already know the type of opportunity you want.
                 </p>
-
                 <Link to="/jobs" className="text-decoration-none fw-semibold">
                   Search Jobs
                   <i className="bi bi-arrow-right ms-2"></i>
@@ -264,14 +251,11 @@ export const Categories = () => {
             <div className="col-lg-4">
               <div className="border rounded-4 p-4 h-100">
                 <i className="bi bi-file-earmark-text fs-3 text-primary"></i>
-
                 <h2 className="h5 fw-bold mt-3">Improve Your Resume</h2>
-
                 <p className="text-secondary small mb-3">
                   Review your resume before applying and make sure your relevant
                   skills and experience are easy to understand.
                 </p>
-
                 <Link
                   to="/resume-checker"
                   className="text-decoration-none fw-semibold"
@@ -285,15 +269,16 @@ export const Categories = () => {
             <div className="col-lg-4">
               <div className="border rounded-4 p-4 h-100">
                 <i className="bi bi-book fs-3 text-primary"></i>
-
                 <h2 className="h5 fw-bold mt-3">Prepare Before Applying</h2>
-
                 <p className="text-secondary small mb-3">
                   Explore practical resources covering resumes, interviews, job
                   searching, and career preparation.
                 </p>
-
-                <Link to="/guides" className="text-decoration-none fw-semibold">
+                {/* Fixed broken route from /guides to /career-guides */}
+                <Link
+                  to="/career-guides"
+                  className="text-decoration-none fw-semibold"
+                >
                   Career Guides
                   <i className="bi bi-arrow-right ms-2"></i>
                 </Link>
@@ -307,10 +292,8 @@ export const Categories = () => {
           <div className="alert alert-light border rounded-4 p-4">
             <div className="d-flex gap-3">
               <i className="bi bi-info-circle text-primary fs-4"></i>
-
               <div>
                 <h2 className="h5 fw-bold">About Job Categories</h2>
-
                 <p
                   className="text-secondary small mb-0"
                   style={{ lineHeight: "1.8" }}

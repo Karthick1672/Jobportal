@@ -6,6 +6,8 @@ export const guidesData = [
     category: "Interview Prep",
     readTime: "18 min read",
     date: "Oct 17, 2026",
+    datePublished: "2026-10-17T00:00:00Z",
+    dateModified: "2026-10-17T00:00:00Z",
     summary:
       "Prepare for fresher interviews with practical guidance on programming fundamentals, JavaScript coding, React, SQL, APIs, projects, HR questions, salary discussions, teamwork, and questions to ask recruiters.",
     tip: "Do not memorize interview answers word-for-word. Understand the structure of a strong answer, then explain it naturally using your own projects, skills, education, and experiences.",
@@ -296,6 +298,8 @@ console.log(findLargest([12, 5, 27, 9, 18]));
     category: "Resume Tips",
     readTime: "12 min read",
     date: "Oct 17, 2026",
+    datePublished: "2026-10-17T00:00:00Z",
+    dateModified: "2026-10-17T00:00:00Z",
     summary:
       "Learn how to create a clear software developer resume with practical examples, ATS-friendly formatting, relevant keywords, project descriptions, skills, and a final application checklist.",
     tip: "Never add keywords simply to pass an ATS. Include only skills and technologies you genuinely understand and can confidently explain during an interview.",
@@ -513,6 +517,8 @@ Built a responsive job discovery platform using React and Supabase. Implemented 
     category: "Job Search",
     readTime: "12 min read",
     date: "Oct 17, 2026",
+    datePublished: "2026-10-17T00:00:00Z",
+    dateModified: "2026-10-17T00:00:00Z",
     summary:
       "A practical guide for freshers looking for software developer jobs outside campus placements, covering job portals, company career pages, referrals, projects, applications, and interview preparation.",
     tip: "Build a consistent job-search routine. Focus on relevant openings, genuine applications, and improving your skills instead of applying randomly to hundreds of jobs.",
@@ -778,6 +784,391 @@ Thank you for your time.`,
           "There is no guaranteed number of applications that will result in a job. Focus on suitable opportunities, honest applications, practical skills, and steady improvement.",
         mistake:
           "Do not pay someone who promises a guaranteed job or interview without independently verifying the legitimacy of the service.",
+      },
+    ],
+  },
+
+  {
+    id: "fresher-react-developer-roadmap-2026",
+    slug: "fresher-react-developer-roadmap-2026",
+    title: "The 2026 Frontend Roadmap: How Freshers Land React Developer Jobs",
+    category: "Career Roadmap",
+    readTime: "15 min read",
+    date: "Oct 24, 2026",
+    datePublished: "2026-10-24T00:00:00Z",
+    dateModified: "2026-10-24T00:00:00Z",
+    summary:
+      "A complete technical roadmap for aspiring frontend developers. Learn the required JavaScript fundamentals, React ecosystem tools, API architecture, portfolio project strategies, and common technical interview rounds.",
+    tip: "Do not build generic to-do apps or weather widgets. Recruiters look for applications with complex state handling, caching, clean error boundaries, and genuine authentication integration.",
+    content: [
+      {
+        heading: "1. Core JavaScript Fundamentals Before Touching React",
+        body: "Many junior candidates struggle in React interviews not because they do not know React hooks, but because their core vanilla JavaScript foundation is weak. Interviewers consistently probe runtime execution, async patterns, and modern ES6+ syntax.",
+        points: [
+          "Master closures, the event loop, microtasks, and execution context.",
+          "Understand Promises, async/await, and try/catch error propagation.",
+          "Know array operations inside out: map, filter, reduce, find, some, and every.",
+          "Be comfortable with object destructuring, spread/rest operators, and nullish coalescing (??).",
+          "Understand how DOM events bubble, capture, and how event delegation works.",
+        ],
+        exampleTitle: "Technical Interview Question",
+        example:
+          "Explain the difference between microtasks (Promises) and macrotasks (setTimeout). Can you write a pure debouncing function from scratch without using Lodash?",
+        mistake:
+          "Jumping straight into React without being able to explain how Array.prototype.reduce works or how asynchronous JavaScript executes in the single-threaded event loop.",
+      },
+      {
+        heading: "2. Modern React Architecture & Essential Hooks",
+        body: "Production frontend development in 2026 demands clean functional component architecture, effective state boundaries, and performant re-rendering logic.",
+        points: [
+          "Learn useState and useReducer for complex component state logic.",
+          "Understand useEffect dependency arrays and when NOT to use effects.",
+          "Master memoization hooks: useCallback and useMemo with real performance profiling.",
+          "Learn custom hooks to decouple business logic from user interface presentation.",
+          "Understand React context limits and when to introduce external client state management.",
+        ],
+        exampleTitle: "Architectural Rule",
+        example:
+          "Do not sync state with useEffect if that state can be computed on the fly during rendering. Derive data whenever possible to avoid unnecessary cascading renders.",
+        mistake:
+          "Using useEffect for data fetching without aborting previous in-flight requests (AbortController) when dependencies change.",
+      },
+      {
+        heading: "3. State Management & Server Cache Handling",
+        body: "Modern applications differentiate between UI state (modal open/closed) and server cache state (cached API responses). Knowing when to use tools like TanStack Query vs. Zustand separates entry-level applicants from experienced juniors.",
+        points: [
+          "Understand why storing global server data in plain Redux/Context causes synchronization issues.",
+          "Learn client-side cache management: stale time, refetch triggers, and optimistic UI updates.",
+          "Keep local UI state strictly within the component or closest common parent.",
+          "Understand URL query parameters as the single source of truth for filters, search, and page pagination.",
+        ],
+        exampleTitle: "Real-World Setup",
+        example:
+          "Use React Router search params for table filters, TanStack Query for caching backend endpoints, and Zustand or Context for lightweight theme or modal controls.",
+        mistake:
+          "Storing every single API response in Redux boilerplate when a dedicated caching library or native fetch pipeline eliminates hundreds of lines of code.",
+      },
+      {
+        heading: "4. Portfolio Projects That Actually Impress Recruiters",
+        body: "Junior portfolios flooded with basic calculators, clones without business logic, or YouTube tutorial duplicates are routinely ignored by engineering leads.",
+        points: [
+          "Build full-stack CRUD applications with real role-based authentication (JWT or Supabase Auth).",
+          "Implement pagination, debounced search, filtering, and responsive mobile-first layouts.",
+          "Include robust error handling, empty states, and accessible form validations.",
+          "Deploy live applications with custom domains, continuous integration, and clean Git commits.",
+          "Write clear README documentation explaining architectural choices, trade-offs, and run instructions.",
+        ],
+        exampleTitle: "Project Blueprint",
+        example:
+          "An inventory or job application tracking dashboard featuring searchable tables, optimistic UI updates, downloadable CSV reports, and dark/light mode persistence.",
+        mistake:
+          "Deploying broken demos or linking GitHub repositories with only a single 'initial commit' containing copied boilerplate code.",
+      },
+      {
+        heading: "5. Frontend Technical Interview Preparation",
+        body: "Frontend interview loops typically involve three distinct phases: live vanilla JS coding, React component design, and a system/architecture discussion.",
+        points: [
+          "Practice DOM manipulation and algorithms using vanilla JavaScript on platforms like LeetCode or GreatFrontEnd.",
+          "Be ready to code a live widget (e.g., autocomplete search bar, modal dialog, or infinite scroll list).",
+          "Review web vitals: LCP (Largest Contentful Paint), FID/INP, and CLS (Cumulative Layout Shift).",
+          "Be prepared to review and refactor messy code snippets provided by the interviewer.",
+        ],
+        exampleTitle: "Live Machine Coding Question",
+        example:
+          "Build an accessible Autocomplete input that queries a mock API, debounces user input by 300ms, highlights matching substrings, and handles keyboard navigation (Arrow keys + Enter).",
+        mistake:
+          "Failing to ask clarifying questions about edge cases (empty states, slow networks, API failures) before starting to write code.",
+      },
+    ],
+  },
+
+  {
+    id: "campus-placement-aptitude-test-pattern",
+    slug: "campus-placement-aptitude-test-pattern",
+    title: "Campus Placement Test Pattern & Syllabus Guide for Tech Freshers",
+    category: "Assessment Prep",
+    readTime: "14 min read",
+    date: "Oct 26, 2026",
+    datePublished: "2026-10-26T00:00:00Z",
+    dateModified: "2026-10-26T00:00:00Z",
+    summary:
+      "A structured breakdown of online assessment patterns used by top IT service companies and product firms. Master quantitative aptitude, logical reasoning, verbal ability, and hands-on coding rounds.",
+    tip: "Online assessment filters are elimination rounds, not selection rounds. Managing negative marking, pacing question timers, and scoring above sectional cutoffs is essential.",
+    content: [
+      {
+        heading: "1. The Online Assessment Landscape",
+        body: "Most national off-campus hiring drives and on-campus recruitment filters utilize automated testing platforms (such as HackerEarth, AMCAT, CoCubes, Mettl, or proprietary engines). Understanding test mechanics is just as critical as domain knowledge.",
+        points: [
+          "Cognitive sections test speed, mental calculation, and logical pattern matching.",
+          "Technical MCQs test core CS subjects: OS, DBMS, Computer Networks, and OOP concepts.",
+          "Hands-on coding evaluates algorithmic problem solving, clean syntax, and time complexity constraints.",
+          "Most platforms enforce strict proctoring: fullscreen monitoring, audio recording, and tab-switching penalties.",
+        ],
+        exampleTitle: "Typical Structure",
+        example:
+          "Part A: Cognitive Assessment (Numerical, Verbal, Reasoning) ~ 60-80 mins. Part B: Technical MCQs & Hands-on Coding ~ 60-90 mins.",
+        mistake:
+          "Focusing 100% of preparation time on Data Structures and ignoring cognitive aptitude, which leads to immediate round-one elimination.",
+      },
+      {
+        heading: "2. Quantitative Aptitude: High-Weightage Topics",
+        body: "Quantitative sections evaluate basic mathematical competency and rapid mental arithmetic without the use of physical calculators.",
+        points: [
+          "Percentages, Profit & Loss, and Simple/Compound Interest.",
+          "Time, Speed & Distance, including Trains, Boats & Streams, and Relative Speed.",
+          "Time & Work, Pipes & Cisterns, and Work-Sharing Equations.",
+          "Permutations, Combinations, and Basic Classical Probability.",
+          "Data Interpretation: Bar charts, Pie charts, and Tabular analysis.",
+        ],
+        exampleTitle: "Time Management Strategy",
+        example:
+          "Aim for an average speed of 60 to 75 seconds per question. If a problem takes longer than 90 seconds to calculate, mark the closest estimate and proceed to prevent incomplete sections.",
+        mistake:
+          "Getting bogged down in a complex calculation and running out of time before reaching easier questions near the end of the section.",
+      },
+      {
+        heading: "3. Logical & Analytical Reasoning Mastery",
+        body: "Logical reasoning tests how effectively a candidate handles conditions, deductions, and structural patterns under time pressure.",
+        points: [
+          "Blood Relations, Direction Sense, and Spatial Puzzles.",
+          "Linear and Circular Seating Arrangements with conditional constraints.",
+          "Syllogisms and Venn diagram deductions.",
+          "Coding-Decoding and Series Completion (Alpha-numeric patterns).",
+          "Statement-Assumption and Cause-and-Effect logical assertions.",
+        ],
+        exampleTitle: "Puzzle Solving Methodology",
+        example:
+          "In seating arrangement problems, always draw two parallel diagram possibilities simultaneously so you can eliminate contradictions immediately without restarting from scratch.",
+        mistake:
+          "Assuming facts that are not explicitly stated in the problem statement when solving critical reasoning questions.",
+      },
+      {
+        heading: "4. Technical MCQs & Pseudocode Analysis",
+        body: "Technical multiple-choice questions verify whether candidates understand low-level execution mechanics, relational schema principles, and algorithmic notation.",
+        points: [
+          "Pseudocode execution: Loop counting, bitwise operations, recursion tracing, and variable scope rules.",
+          "Database concepts: Normalization forms (1NF to 3NF), primary/foreign keys, joins, and transactions (ACID).",
+          "Operating Systems: Process vs. Thread, deadlocks, semaphore basics, paging, and CPU scheduling algorithms.",
+          "Computer Networks: OSI 7-layer model, TCP vs. UDP, IP addressing classes, and HTTP status codes.",
+        ],
+        exampleTitle: "Pseudocode Example",
+        example:
+          "Tracing nested loops with bitwise XOR or shift operations (e.g., evaluating 'x = x ^ (x >> 1)' across four iterations).",
+        mistake:
+          "Overlooking boundary conditions in loops (such as <= vs <), which leads to off-by-one errors in recursion tracing.",
+      },
+      {
+        heading: "5. Hands-on Coding Round Execution",
+        body: "The coding segment usually consists of 1 to 3 problems ranging from basic array transformations to intermediate dynamic programming or graph traversal.",
+        points: [
+          "Write modular, clean code that compiles cleanly without unused imports or variables.",
+          "Ensure edge cases are accounted for: empty inputs, zero values, negative numbers, and boundary limits.",
+          "Be mindful of time complexity: An O(N^2) brute force will fail hidden test cases when N > 100,000.",
+          "Pay close attention to standard I/O formats (reading from standard input vs. implementing method signatures).",
+        ],
+        exampleTitle: "Common Assessment Question",
+        example:
+          "Given an array of integers representing stock prices, calculate the maximum single-transaction profit with O(N) time and O(1) space complexity.",
+        mistake:
+          "Passing all sample public test cases and submitting immediately without testing with large datasets, triggering time-limit-exceeded (TLE) errors.",
+      },
+    ],
+  },
+
+  {
+    id: "how-to-write-cold-emails-for-tech-jobs",
+    slug: "how-to-write-cold-emails-for-tech-jobs",
+    title:
+      "How Freshers Can Write Cold Emails to Recruiters That Get Responses",
+    category: "Job Search",
+    readTime: "11 min read",
+    date: "Oct 28, 2026",
+    datePublished: "2026-10-28T00:00:00Z",
+    dateModified: "2026-10-28T00:00:00Z",
+    summary:
+      "Stop sending generic resume blasts. Learn how to identify hiring managers, construct high-converting cold email outreach, avoid spam filters, and follow up professionally without annoying recruiters.",
+    tip: "A successful cold email sells your relevance, not your desperation. Highlight a specific engineering challenge you can help solve rather than begging for any available opportunity.",
+    content: [
+      {
+        heading: "1. Why Traditional Cold Inquiries Fail",
+        body: "Recruiters and engineering directors receive dozens of generic messages daily. Mass copy-pasted templates starting with 'Dear Sir/Madam, please review my attached resume' are deleted immediately without being opened.",
+        points: [
+          "Generic templates show zero research or genuine interest in the company's product.",
+          "Sending uncompressed attachments (.docx/.zip) often triggers corporate spam filters.",
+          "Focusing purely on your personal needs ('I need a job urgently') fails to demonstrate business value.",
+          "Reaching out to executive leaders (like the CEO) for standard junior roles bypasses the proper talent acquisition team.",
+        ],
+        exampleTitle: "What Recruiters Look For",
+        example:
+          "Recruiters want concise proof of skill, a direct link to your live work or GitHub, and clear alignment with an open role or business initiative.",
+        mistake:
+          "Attaching a 5MB PDF file directly to an unsolicited first email instead of including a clean portfolio or hosted resume hyperlink.",
+      },
+      {
+        heading: "2. Finding the Right Contact & Verified Email",
+        body: "Sending your message to the correct individual is 80% of successful cold outreach. Target Technical Recruiters, Talent Acquisition Specialists, or Engineering Managers who oversee junior hiring.",
+        points: [
+          "Use LinkedIn search: Filter by Company, Department ('Engineering'), and Title ('Recruiter' or 'Talent Acquisition').",
+          "Identify Engineering Leads who have recently posted about open team positions.",
+          "Verify company email formats (e.g., firstname.lastname@company.com) using standard professional pattern tools.",
+          "Never email personal accounts (@gmail.com) when professional corporate emails are accessible.",
+        ],
+        exampleTitle: "Search Query",
+        example:
+          "Search LinkedIn: '[Company Name] Technical Recruiter' or '[Company Name] Engineering Manager - Early Careers'.",
+        mistake:
+          "Blasting the generic info@ or careers@ email addresses, where unsolicited emails are rarely routed to technical hiring teams.",
+      },
+      {
+        heading: "3. Crafting High-Converting Subject Lines",
+        body: "Your subject line determines whether your email is opened or archived. It must be specific, professional, and contain role-relevant context.",
+        points: [
+          "Keep subject lines under 50 characters so they display clearly on mobile email clients.",
+          "State your target position and core technical stack directly.",
+          "Reference a specific opening or job ID if one exists.",
+        ],
+        exampleTitle: "Effective Subject Lines",
+        example:
+          "Good: 'Junior React Developer Application - [Your Name]' or 'Inquiry: Entry-Level Frontend Role (Job ID #14209)'.",
+        mistake:
+          "Vague, spam-like subject lines like 'Job Application', 'Urgent Inquiry', or 'Looking for an Opportunity'.",
+      },
+      {
+        heading: "4. The 4-Sentence High-Impact Email Framework",
+        body: "Keep your message under 120 words. Hiring managers take only 5 to 10 seconds to skim an introductory outreach message.",
+        points: [
+          "Sentence 1 (Context): Who you are and the specific role or team you are targeting.",
+          "Sentence 2 (Relevance): One notable achievement, technical stack, or project directly relevant to their work.",
+          "Sentence 3 (Evidence): A concise link to your live demo, GitHub, or portfolio.",
+          "Sentence 4 (Call to Action): A polite, low-friction request to discuss upcoming entry-level needs.",
+        ],
+        exampleTitle: "Battle-Tested Outreach Template",
+        example: `Hi [Recruiter Name],
+
+I noticed [Company Name] recently expanded its web platform and wanted to express my interest in entry-level frontend software roles.
+
+As a Computer Science graduate with hands-on experience in React, TypeScript, and Supabase, I recently built a full-stack job board (demo: yoursite.com) featuring real-time caching, debounce filters, and responsive UI components.
+
+I have attached my clean one-page resume and would welcome the chance to speak with your team if you have an open requirement for a junior frontend engineer.
+
+Best regards,
+[Your Name]
+[LinkedIn Profile Link] | [GitHub Link]`,
+        mistake:
+          "Writing a 500-word biography detailing your high school grades, hobbies, and personal financial struggles.",
+      },
+      {
+        heading: "5. The Professional Follow-Up Protocol",
+        body: "Hiring managers are busy; an initial lack of response does not always mean rejection. A disciplined, polite follow-up can double your response rate.",
+        points: [
+          "Wait 4 to 6 business days before sending your first follow-up.",
+          "Keep follow-ups inside the exact same email thread so the original context remains visible.",
+          "Add value in the follow-up (e.g., mention an updated project feature or recent certification).",
+          "Never send more than two polite follow-ups if no response is received.",
+        ],
+        exampleTitle: "Follow-Up Template",
+        example:
+          "Hi [Recruiter Name], I am following up on my note from last week regarding junior software openings at [Company Name]. I recently pushed an automated test suite to the project demo mentioned below. I know you are busy, so please let me know if you would like me to connect with another member of your hiring team. Thank you for your time!",
+        mistake:
+          "Following up within 24 hours or sounding entitled or passive-aggressive when a recruiter does not respond immediately.",
+      },
+    ],
+  },
+
+  {
+    id: "fresher-salary-negotiation-guide",
+    slug: "fresher-salary-negotiation-guide",
+    title: "Fresher Salary Negotiation: Understanding CTC, Fixed Pay, & Bonds",
+    category: "Career Advice",
+    readTime: "13 min read",
+    date: "Oct 30, 2026",
+    datePublished: "2026-10-30T00:00:00Z",
+    dateModified: "2026-10-30T00:00:00Z",
+    summary:
+      "Demystify your first job offer letter. Understand the critical difference between CTC and in-hand salary, variable compensation, service bonds, joining bonuses, and how to evaluate competing offers professionally.",
+    tip: "Never sign an offer letter based solely on the headline CTC number. Calculate the actual monthly post-tax take-home pay and review the terms of any employment agreement before accepting.",
+    content: [
+      {
+        heading: "1. Deconstructing Cost to Company (CTC) vs. In-Hand Pay",
+        body: "The total CTC quoted in Indian tech offer letters rarely matches what actually lands in your bank account every month. A high advertised CTC often includes one-time bonuses, retirement contributions, and variable components.",
+        points: [
+          "Fixed Basic Salary: The guaranteed baseline used to calculate taxes, gratuity, and provident funds.",
+          "HRA (House Rent Allowance) & Special Allowances: Tax-exemptible allowances that make up the bulk of monthly cash.",
+          "Employee & Employer EPF: 12% statutory contributions deducted directly from your headline compensation.",
+          "Variable / Performance Pay: Discretionary bonuses paid annually based on company financial performance.",
+          "Gratuity & Insurance: Employer-funded benefits bundled into the CTC total that are not part of take-home pay.",
+        ],
+        exampleTitle: "CTC Breakdown Formula",
+        example:
+          "Gross Salary = Basic + HRA + Allowances. Net In-Hand = Gross Salary - (EPF + Professional Tax + Income Tax Deductions).",
+        mistake:
+          "Assuming a ₹6 LPA CTC means you will receive ₹50,000 every month, without accounting for EPF, taxes, and variable pay deductions.",
+      },
+      {
+        heading: "2. Evaluating Service Agreements and Employment Bonds",
+        body: "Many organizations require freshers to sign 1-year or 2-year service agreements with financial penalties for early exit. Understanding the legal and professional implications is crucial before accepting.",
+        points: [
+          "Verify what the bond covers: Training costs, specialized certifications, or general retention.",
+          "Check whether the penalty amount depreciates over time (e.g., reducing every quarter completed).",
+          "Ensure the company does NOT withhold original academic certificates (mark sheets/degrees), which is legally prohibited in many jurisdictions.",
+          "Assess whether the technical learning and career growth outweigh the mobility restriction.",
+        ],
+        exampleTitle: "Key Question to Ask HR",
+        example:
+          "'Could you clarify whether original educational certificates are retained during the onboarding process, and what the formal exit process looks like during the probation period?'",
+        mistake:
+          "Surrendering original degree certificates to an employer as collateral for a service agreement.",
+      },
+      {
+        heading: "3. When and How Freshers Can Negotiate",
+        body: "While mass-recruitment IT service companies use non-negotiable fixed salary bands for campus intakes, startups, product companies, and off-campus hires often have room for compensation adjustments.",
+        points: [
+          "Leverage competing job offers politely to negotiate base salary or joining bonuses.",
+          "Demonstrate specialized skills (e.g., verified contributions to high-scale repositories or production internships).",
+          "If the fixed base is non-negotiable, ask about flexible remote work, learning stipends, or earlier performance review cycles (e.g., 6 months vs. 12 months).",
+          "Always express enthusiasm for the team and mission before discussing numbers.",
+        ],
+        exampleTitle: "Negotiation Script",
+        example:
+          "'I am very excited about the opportunity to join the platform team at [Company]. Given my previous 6-month internship building production React micro-frontends and an active competing offer of ₹X, is there any flexibility to adjust the fixed component closer to ₹Y?'",
+        mistake:
+          "Demanding an aggressive pay increase without having another written offer or tangible, demonstrable technical leverage.",
+      },
+      {
+        heading: "4. Clarifying Probation Periods & Appraisals",
+        body: "Entry-level roles typically begin with a 3 to 6-month probation period during which notice periods and performance criteria differ from full-time permanent status.",
+        points: [
+          "Confirm the exact duration of the probation period in writing.",
+          "Understand the notice period duration both during probation (often 15–30 days) and post-confirmation (often 60–90 days).",
+          "Ask what key performance indicators (KPIs) are expected to transition smoothly to confirmed employee status.",
+          "Clarify when you will be eligible for your first annual appraisal cycle.",
+        ],
+        exampleTitle: "Offer Letter Checklist",
+        example:
+          "Look for explicit clauses detailing: (1) Probation duration, (2) Notice period terms, (3) Health insurance coverage limits, and (4) Remote work vs. office reporting expectations.",
+        mistake:
+          "Accepting a role without confirming whether medical insurance covers family dependents or hospital emergencies.",
+      },
+      {
+        heading: "5. Professional Offer Acceptance Etiquette",
+        body: "How you accept or decline an offer establishes your early reputation in the technology industry.",
+        points: [
+          "Request 48 to 72 hours to review the detailed terms before formally signing.",
+          "Send a clear, written acceptance email thanking the recruiters and confirming your exact joining date.",
+          "If declining an offer, inform the recruiter promptly and courteously so they can offer the position to backup candidates.",
+          "Never 'ghost' an employer after signing an official offer letter.",
+        ],
+        exampleTitle: "Formal Acceptance Email",
+        example: `Dear [HR Manager],
+
+Thank you for offering me the role of Software Engineer at [Company Name]. I have thoroughly reviewed the employment terms and am delighted to accept the offer.
+
+I look forward to joining the team on [Joining Date] and completing the onboarding documentation.
+
+Warm regards,
+[Your Name]`,
+        mistake:
+          "Holding multiple signed offer letters until the final day without informing companies, which burns professional bridges across recruiter networks.",
       },
     ],
   },

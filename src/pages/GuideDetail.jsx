@@ -9,7 +9,7 @@ export const GuideDetail = () => {
   const guide = guidesData.find((item) => item.slug === slug);
 
   if (!guide) {
-    return <Navigate to="/guides" replace />;
+    return <Navigate to="/career-guides" replace />;
   }
 
   // Show other available guides
@@ -28,22 +28,29 @@ export const GuideDetail = () => {
     return `section-${index + 1}-${cleanHeading}`;
   };
 
-  const articleUrl = `https://jobnest.work/guides/${guide.slug}`;
+  const articleUrl = `https://jobnest.work/career-guides/${guide.slug}`;
 
-  // Article structured data
+  // Article structured data compliant with Google Editorial guidelines
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: guide.title,
     description: guide.summary,
+    datePublished: guide.datePublished || "2026-01-15T00:00:00Z",
+    dateModified: guide.dateModified || "2026-10-01T00:00:00Z",
     author: {
       "@type": "Organization",
-      name: "JobNest Career Team",
+      name: "JobNest Career Editorial Team",
+      url: "https://jobnest.work/about",
     },
     publisher: {
       "@type": "Organization",
       name: "JobNest",
       url: "https://jobnest.work",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://jobnest.work/favicon.ico",
+      },
     },
     mainEntityOfPage: {
       "@type": "WebPage",
@@ -57,13 +64,13 @@ export const GuideDetail = () => {
         <title>{guide.title} | JobNest Career Guides</title>
 
         <meta name="description" content={guide.summary} />
-
         <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
 
         <link rel="canonical" href={articleUrl} />
 
         {/* OPEN GRAPH */}
-        <meta property="og:title" content={guide.title} />
+        <meta property="og:title" content={`${guide.title} | JobNest`} />
         <meta property="og:description" content={guide.summary} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={articleUrl} />
@@ -87,7 +94,7 @@ export const GuideDetail = () => {
               </li>
 
               <li className="breadcrumb-item">
-                <Link to="/guides" className="text-decoration-none">
+                <Link to="/career-guides" className="text-decoration-none">
                   Career Guides
                 </Link>
               </li>
@@ -269,7 +276,7 @@ export const GuideDetail = () => {
                           <i className="bi bi-lightbulb-fill text-primary"></i>
 
                           <h3 className="h6 fw-bold mb-0">
-                            {section.exampleTitle || "Example"}
+                            {section.exampleTitle || "Practical Example"}
                           </h3>
                         </div>
 
@@ -348,7 +355,7 @@ export const GuideDetail = () => {
                   </Link>
 
                   <Link
-                    to="/guides"
+                    to="/career-guides"
                     className="btn btn-outline-primary px-4 py-2 fw-semibold"
                   >
                     More Career Guides
@@ -364,7 +371,10 @@ export const GuideDetail = () => {
               <div className="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
                 <h2 className="fw-bold h3 mb-0">Continue Learning</h2>
 
-                <Link to="/guides" className="text-decoration-none fw-semibold">
+                <Link
+                  to="/career-guides"
+                  className="text-decoration-none fw-semibold"
+                >
                   View all guides →
                 </Link>
               </div>
@@ -397,7 +407,7 @@ export const GuideDetail = () => {
                           </span>
 
                           <Link
-                            to={`/guides/${related.slug}`}
+                            to={`/career-guides/${related.slug}`}
                             className="text-decoration-none fw-semibold small"
                           >
                             Read Guide →
